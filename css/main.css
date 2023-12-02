@@ -1,0 +1,65 @@
+/* main.css */
+body {
+    font-family: Trebuchet MS, sans-serif;
+    font-size: 22px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #151515; /* Dark background */
+    color: white; /* White text */
+}
+
+.container {
+    width: 60%;
+    margin: auto;
+}
+
+header, footer {
+    padding: 1em;
+    background: #222121;
+    text-align: center;
+    color: #fff;
+    width: 100%;
+}
+
+header {
+    padding: 2rem 0;
+}
+
+footer {
+    padding: 1rem 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}
+
+a {
+    text-decoration: none; /* Removes underline */
+    color: #f0e68c; /* A light color, in this case, khaki */
+    transition: color 0.5s ease; /* Adds a transition effect */
+}
+
+a:hover {
+    color: orange; /* Changes color to orange on hover */
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+
