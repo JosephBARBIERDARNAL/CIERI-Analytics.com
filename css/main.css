@@ -5,7 +5,7 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #151515; /* Dark background */
+    background-color: #0d0d0d; /* Dark background */
     color: white; /* White text */
 }
 
@@ -16,7 +16,7 @@ body {
 
 header, footer {
     padding: 1em;
-    background: #222121;
+    background: #1b1a1a;
     text-align: center;
     color: #fff;
     width: 100%;
