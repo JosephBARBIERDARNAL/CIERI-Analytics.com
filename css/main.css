@@ -90,6 +90,30 @@ footer {
     transform: scale(1.1); /* Slightly enlarges the image */
 }
 
+.services {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.service {
+    flex-basis: 20%; /* Adjust the width of each service */
+    margin: 10px;
+    text-align: center;
+}
+
+.service img {
+    width: 100%; /* Adjust the image size as needed */
+    height: auto;
+    margin-top: 10px;
+    transition: transform 0.3s ease;
+}
+
+.service img:hover {
+    transform: scale(1.1); /* Slightly enlarges the image */
+}
+
 a {
     text-decoration: none; /* Removes underline */
     color: #f0e68c; /* A light color, in this case, khaki */
