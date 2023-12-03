@@ -26,29 +26,24 @@ header {
     padding: 2rem 0;
 }
 
-header form {
+header .header-container {
+    position: relative; /* Relative positioning for the container */
+    text-align: center;
+}
+
+header .header-logo {
+    position: absolute; /* Absolute positioning for the logo */
+    left: 300px; /* Adjust this value to move the logo left or right */
+    top: 80%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust vertical centering */
+    height: 100px; /* Adjust as needed */
+    width: auto; /* Maintain aspect ratio */
+}
+
+header h1 {
     display: inline-block;
-    margin-top: 20px;
-}
-
-header input[type=email] {
-    padding: 10px;
-    margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-header button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-}
-
-header button:hover {
-    background-color: #0056b3;
+    margin: 0; /* Removes default margin */
+    /* Additional styling for h1 */
 }
 
 footer {
