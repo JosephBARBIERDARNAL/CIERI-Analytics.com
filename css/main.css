@@ -26,11 +26,68 @@ header {
     padding: 2rem 0;
 }
 
+header form {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+header input[type=email] {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+header button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+header button:hover {
+    background-color: #0056b3;
+}
+
 footer {
     padding: 1rem 0;
-    position: fixed;
-    left: 0;
-    bottom: 0;
+    margin-top: 100px;
+}
+
+.content-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    align-items: center; /* To vertically center align items in each row */
+}
+
+.image-left, .image-right {
+    flex-basis: 30%; /* Reduced from 45% to 30% */
+}
+
+.text-right, .text-left {
+    flex-basis: 65%; /* Adjusted to occupy remaining space */
+    text-align: left;
+}
+
+.image-left img, .image-right img {
+    max-width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    transition: transform 0.3s ease;
+}
+
+.image-right {
+    order: 2;
+}
+
+.text-left {
+    order: 1;
+}
+
+.image-left img:hover, .image-right img:hover {
+    transform: scale(1.1); /* Slightly enlarges the image */
 }
 
 a {
@@ -57,9 +114,3 @@ nav ul li a {
     color: white;
     text-decoration: none;
 }
-
-main {
-    padding: 20px;
-}
-
-
