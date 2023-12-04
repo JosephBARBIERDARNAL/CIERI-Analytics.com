@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteRule ^complex/share\.html$ /complex/articles/share/share.html [L,NC]
+
+
+
+
