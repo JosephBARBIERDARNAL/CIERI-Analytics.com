@@ -9,6 +9,10 @@ body {
     color: white; /* White text */
 }
 
+h1 {
+    text-align: center;
+}
+
 .container {
     width: 60%;
     margin: auto;
@@ -33,7 +37,6 @@ header .header-container {
 
 header .header-logo {
     position: absolute; /* Absolute positioning for the logo */
-    left: 300px; /* Adjust this value to move the logo left or right */
     top: 80%; /* Center vertically */
     transform: translateY(-50%); /* Adjust vertical centering */
     height: 100px; /* Adjust as needed */
