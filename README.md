@@ -1,3 +1,2 @@
-# Complex
+# Behavior, Identity and Data Science
 
-### Data science for the study of behavior and identity

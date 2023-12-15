@@ -13,6 +13,10 @@ h1 {
     text-align: center;
 }
 
+:not(footer) > p {
+    text-align: justify;
+}
+
 .container {
     width: 60%;
     margin: auto;
@@ -33,6 +37,7 @@ header {
 header .header-container {
     position: relative; /* Relative positioning for the container */
     text-align: center;
+    font-size: 30px;
 }
 
 header .header-logo {
@@ -136,3 +141,91 @@ nav ul li a {
     color: white;
     text-decoration: none;
 }
+
+ul li {
+    text-align: justify;
+}
+
+.image-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.image-container {
+    width: 32%; /* Adjust the width as per your layout */
+    text-align: center;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px; /* Optional, for rounded corners */
+    transition: transform 0.4s ease;
+}
+
+.image-container p {
+    margin-top: 8px;
+}
+
+.image-container img:hover {
+    transform: scale(1.05); /* Slightly enlarges the image */
+}
+
+.image-row p {
+    font-size: 20px;
+    text-align: center;
+}
+
+.code-container {
+    position: relative;
+    background: #282c34; /* Dark background for code */
+    padding: 2px;
+    padding-left: 60px;
+    border-radius: 10px; /* Rounded borders */
+    overflow: auto;
+    width: 80%; /* Container width reduced to 80% */
+    margin: auto; /* Center the container */
+    display: block;
+}
+
+.code-container pre {
+    margin: 0;
+    border-radius: 8px; /* Optional: Rounded borders for the code block */
+    overflow: auto; /* Ensures long code lines are scrollable */
+}
+
+.code-container .lang-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: rgb(209, 117, 3); /* Stylish orange background */
+    border: none;
+    border-radius: 3px;
+    color: white;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.code-container .lang-btn:hover {
+    background-color: rgb(255, 153, 0); /* Slightly lighter orange on hover */
+}
+
+/* Additional styling for the code */
+pre {
+    margin: 0;
+    border-radius: 8px; /* Optional: Rounded borders for the code block */
+    padding: 0px; /* Increase top, bottom, left, and right padding */
+}
+
+code {
+    color: #ffffff; /* Light color for text */
+    font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New;
+    font-size: 18px;
+    display: block; /* Ensures that the padding applies correctly */
+    padding: 0; /* You can adjust this if additional padding is needed */
+}
+
+

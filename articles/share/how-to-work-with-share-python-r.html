@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data and Behavior</title>
+    <link rel="stylesheet" href="../../css/main.css">
+</head>
+
+<body>    
+    <header>
+        <div class="header-container">
+            <h1><a href='../../index.html'>Behavior, identity & data science</a></h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../articles.html">Articles</a></li>
+                <li><a href="../../contact.html">Contact</a></li>
+                <li><a href="../../about.html">About</a></li>
+            </ul>
+        </nav>    
+    </header>
+    <br>
+
+    <div class="container">
+        <h1>Working with SHARE: a tutorial in R and Python</h2><hr>
+        <p>Dealing with SHARE data can be tricky for non-initiated since most datasets
+            contain lots of columns with very specific name, there are a lot of missing values
+            and outliers, as well as lots of other complexity!
+        </p>
+        <p>However, main data analysis software, Python and R, can easily deal with most of those problems.
+            In this post, we'll go over how to open datasets, merge them, clean the variables, and other
+            aspects that will make your dataset ready for your analysis.
+        </p>
+        <p style="font-style: italic;">Warning: we work with Stata format (.dta) but it's the exactly the same
+            for SPSS! Just change the file extension.</p>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <h2>Before starting</h2><hr>
+        <p>
+            There is nothing worse than a bad working environment. Before starting, make sure
+            you have a created a new folder for your project. Let's call it the "share-project".
+            In this "share-project" folder, you will have a "data" folder where you will put all
+            the datasets you will need. If you don't know exactly which datasets you need, you can
+            find info on the <a href="https://share-eric.eu/" target="_blank">SHARE website</a>.
+        </p>
+        <p>
+            Now that you have your folder, you need to have installed a few packages. In R, you will
+            need the <i>"haven"</i> package. In Python, you will need the <i>"pandas"</i> package.
+            If you never install them before, you can do it with the following commands:
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button1" onclick="toggleCode('rCode1', 'pythonCode1', 'button1')">R</button>
+            
+            <pre id="rCode1"><code>
+install.packages('haven')
+            </code></pre>
+            
+            <pre id="pythonCode1" style="display: none;"><code>
+pip install pandas
+            </code></pre>
+        </div>
+
+        <p>
+            Now that you have your folder and your packages, you are ready to start!
+            Load the packages in your environment and let's go!
+        </p>
+        <p style="font-style: italic;">Make sure you're working directory is the "share-project" folder.</p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button2" onclick="toggleCode('rCode2', 'pythonCode2', 'button2')">R</button>
+            
+            <pre id="rCode2"><code>
+library(dplyr)
+            </code></pre>
+            
+            <pre id="pythonCode2" style="display: none;"><code>
+import pandas as pd
+            </code></pre>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Opening Datasets</h2><hr>
+        <p>
+            First step is to open the datasets. In most case, you will need to open multiple
+            datasets and merge them together.
+        </p>
+        <p>
+            Datasets have the following format: <i>"sharew6_rel8-0-0_br.dta"</i>. For example, this dataset
+            is the 8th release, of the 6th wave for the "br" data of the SHARE dataset. The "br"
+            is for "Behavior Risks". In general, try to have the latest release available.
+        </p>
+        <p>
+            In order to know which dataset you need, I recommend you to go to the
+            <a href="https://share-eric.eu/" target="_blank">SHARE website</a>. There, you can find
+            the documentation for each wave and questionnaires.
+        </p>
+        <p>
+            Now let's see an example of to open 3 datasets in a proper way with the indication
+            from before.
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button3" onclick="toggleCode('rCode3', 'pythonCode3', 'button3')">R</button>
+            
+            <pre id="rCode3"><code>
+br_dataframe = read_dta('data/sharew6_rel8-0-0_br.dta')
+dn_dataframe = read_dta('data/sharew8_rel8-0-0_dn.dta')
+ph_dataframe = read_dta('data/sharew8_rel8-0-0_ph.dta')
+            </code></pre>
+            
+            <pre id="pythonCode3" style="display: none;"><code>
+br_dataframe = pd.read_stata('data/sharew6_rel8-0-0_br.dta')
+dn_dataframe = pd.read_stata('data/sharew8_rel8-0-0_dn.dta')
+ph_dataframe = pd.read_stata('data/sharew8_rel8-0-0_ph.dta')
+            </code></pre>
+        </div>
+        
+        <br>
+        <br>
+        <br>
+
+        <h2>Merging Datasets</h2><hr>
+        <p>
+            Now that we have our datasets, we need to merge them together. Merging datasets
+            is a very important step since it will allow us to have a complete dataset with
+            all the variables we need. In our case, we want to merge the "br", "dn" and "ph"
+            datasets together.
+        </p>    
+        <p>In order to do so, we need to find a common variable between the datasets. In our case,
+            we will use the <i>"mergeid"</i> variable which is the unique identifier for each respondent.
+            When working with this type of database, it's pretty common to have a unique identifier such
+            as <i>"mergeid"</i> or <i>"id"</i>. 
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button4" onclick="toggleCode('rCode4', 'pythonCode4', 'button4')">R</button>
+            
+            <pre id="rCode4"><code>
+merged_dataframe = merge(br_dataframe, dn_dataframe, by = 'mergeid') 
+merged_dataframe = merge(merged_dataframe, ph_dataframe, by = 'mergeid')
+            </code></pre>
+            
+            <pre id="pythonCode4" style="display: none;"><code>
+merged_dataframe = pd.merge(br_dataframe, dn_dataframe, on = 'mergeid')
+merged_dataframe = pd.merge(merged_dataframe, ph_dataframe, on = 'mergeid')
+            </code></pre>
+        </div>
+        
+        <br>
+        <br>
+        <br>
+
+        <h2>Renaming Variables</h2><hr>
+        <p>
+            Now that we have our merged dataset, we need to rename the variables. The main reason
+            is that the variables names are not very explicit. For example, the variable <i>"br1"</i>
+            is the variable for the respondent's age. It's not very explicit and it's not very easy
+            to remember. So let's rename it!
+        </p>
+        <p>
+            Renaming variables is not necessary in itself but it can be considered as a <b>good practice</b>
+            since it makes your work clearer and easier to understand, for you or your reviewers.
+        </p>
+        <p>
+            Also, even if you work with lots of variables, take the time to rename them. It will save you
+            a lot of time in the future (and you'll see that you will just need to run it once thanks to a <b>trick</b>!)
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button5" onclick="toggleCode('rCode5', 'pythonCode5', 'button5')">R</button>
+            
+            <pre id="rCode5"><code>
+names(merged_dataframe)[names(merged_dataframe) == 'br1'] = 'age'
+            </code></pre>
+            
+            <pre id="pythonCode5" style="display: none;"><code>
+merged_dataframe.rename(columns = {'br1': 'age'}, inplace = True)
+            </code></pre>
+        </div>
+        <p>
+            From now we have a single dataset with all the variables we need and with explicit names,
+            which is great!
+        </p>
+        
+        <br>
+        <br>
+        <br>
+
+        <h2>Missing values</h2><hr>
+        <p>
+            In SHARE, there are different formats for missing values. For example, there are some
+            <i>"real"</i> missing values where the corresponding value is empty. But there are also
+            some <i>"fake"</i> missing values where the corresponding value is <i>"-1"</i> or <i>"-2"</i>
+            when the respondent didn't answer the question. Let's see this in more details.
+        </p>
+        
+        
+    </div> <!-- end container -->
+
+<script src="../../script/button-switch-language.js"></script>
+<!--<script src="../../script/button-code-snippet.js"></script> -->
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<footer>
+    <p>Copyright © 2023, Joseph Barbier & Thomas Salanova</p>
+</footer>
+</html>
