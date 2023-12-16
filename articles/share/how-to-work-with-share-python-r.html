@@ -22,6 +22,7 @@
         </nav>    
     </header>
     <br>
+    <br>
 
     <div class="container">
         <h1>Working with SHARE: a tutorial in R and Python</h2><hr>
@@ -200,15 +201,93 @@ merged_dataframe.rename(columns = {'br1': 'age'}, inplace = True)
         <p>
             In SHARE, there are different formats for missing values. For example, there are some
             <i>"real"</i> missing values where the corresponding value is empty. But there are also
-            some <i>"fake"</i> missing values where the corresponding value is <i>"-1"</i> or <i>"-2"</i>
-            when the respondent didn't answer the question. Let's see this in more details.
+            some <i>"fake"</i> missing values. Let's see this in more details.
         </p>
+        <p>
+            According to SHARE's documentation, there are missing codes that defines the type of missing
+            value:
+            <ul>
+                <li>-1: "Don't know"</li>
+                <li>-2: "Refusal"</li>
+                <li>-3: "Implausible value/suspected wrong"</li>
+                <li>-4: "Not codable"</li>
+                <li>-5: "Not answered"</li>
+                <li>-7: "Not yet coded"</li>
+                <li>-9: "Not applicable"</li>
+            </ul>
+        </p>
+        <p>
+            For financial variables, there are also some specific missing codes:
+            <ul>
+                <li>-9999991: "Don't know"</li>
+                <li>-9999992: "Refusal"</li>
+            </ul>
+        </p>
+        <p>
+            For not applicable variables (-9), there are also some specific missing codes in the
+            case you need to know why the variable is not applicable:
+            <ul>
+                <li>-91: "Not applicable (not yet part of sample)"</li>
+                <li>-92: "Not applicable (no participation in this wave)"</li>
+                <li>-93: "Not applicable (respondent was not listed as household member in this wave)"</li>
+                <li>-94: "Not applicable (respondent has an End-of-Life interview in previous waves)"</li>
+                <li>-95: "Not applicable (no main interview done)"</li>
+                <li> -98: "Not applicable (other reason)"</li>
+                <li> -99: "Not applicable (missing by design)"</li>
+            </ul>
+        </p>
+        <p>
+            In this post we will assume that your work is not based on missing values. This means
+            that we will transform all the previous missing codes into <i>"real"</i> missing values.
+            Concrete example: if a respondent has a missing value for the variable <i>"blabla"</i> because
+            he/she refused to answer, we will transform the value into a <i>"real"</i> missing value, also
+            called <i>NA, NaN or None</i> in R and Python.
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button6" onclick="toggleCode('rCode6', 'pythonCode6', 'button6')">R</button>
+            
+            <!-- Iterates over all column and transform all missing codes to NA -->
+            <pre id="rCode6"><code>
+values_to_replace = c(-1, -2, -3, -4, -5, -7, -9,
+                      -91, -92, -93, -94, -95, -98,
+                      -99, -9999991, -9999992)
+
+# Iterates over all columns and transform all missing codes to NaN
+for (i in 1:ncol(merged_dataframe)) {
+  merged_dataframe[, i] = ifelse(merged_dataframe[, i] %in% values_to_replace, # values to replace
+                                 NA, # value to replace with
+                                 merged_dataframe[, i])
+}
+            </code></pre>
+            
+            <pre id="pythonCode6" style="display: none;"><code>
+values_to_replace = [-1, -2, -3, -4, -5, -7, -9,
+                    -9999991, -9999992, -91, -92,
+                    -93, -94, -95, -98, -99]
+
+# Iterates over all columns and transform all missing codes to NaN
+for i in merged_dataframe.columns:
+    merged_dataframe[i].replace(values_to_replace, # values to replace
+                                np.nan, # value to replace with
+                                inplace = True)
+            </code></pre>
+        </div>
+        <p>
+            Now that we have transformed all the missing codes into <i>"real"</i> missing values, we can
+            start working on our dataset!
+        </p>
+        
+        <br>
+        <br>
+        <br>
+
+
         
         
     </div> <!-- end container -->
 
 <script src="../../script/button-switch-language.js"></script>
-<!--<script src="../../script/button-code-snippet.js"></script> -->
 </body>
 
 
