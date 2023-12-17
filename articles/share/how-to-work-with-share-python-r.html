@@ -45,22 +45,22 @@
         <h2>Before starting</h2><hr>
         <p>
             There is nothing worse than a bad working environment. Before starting, make sure
-            you have a created a new folder for your project. Let's call it the "share-project".
+            you have a created a new folder for your project. Let's call it the share-project".
             In this "share-project" folder, you will have a "data" folder where you will put all
             the datasets you will need. If you don't know exactly which datasets you need, you can
             find info on the <a href="https://share-eric.eu/" target="_blank">SHARE website</a>.
         </p>
         <p>
-            Now that you have your folder, you need to have installed a few packages. In R, you will
-            need the <i>"haven"</i> package. In Python, you will need the <i>"pandas"</i> package.
-            If you never install them before, you can do it with the following commands:
+            Now that you have your folder, you need to have installed a few packages. If you never
+            install them before, you can do it with the following commands:
         </p>
 
         <div class="code-container">
             <button class="lang-btn" id="button1" onclick="toggleCode('rCode1', 'pythonCode1', 'button1')">R</button>
             
             <pre id="rCode1"><code>
-install.packages('haven')
+install.packages('dplyr')
+install.packages('foreign')
             </code></pre>
             
             <pre id="pythonCode1" style="display: none;"><code>
@@ -79,6 +79,7 @@ pip install pandas
             
             <pre id="rCode2"><code>
 library(dplyr)
+library(foreign)
             </code></pre>
             
             <pre id="pythonCode2" style="display: none;"><code>
@@ -161,11 +162,58 @@ merged_dataframe = pd.merge(merged_dataframe, ph_dataframe, on = 'mergeid')
         <br>
         <br>
 
+        <h2>Removing Variables</h2><hr>
+        <p>
+            Now that we have our merged dataset, we need to remove the variables we don't need.
+            In our case, we don't need all the variables from the "br", "dn" and "ph" datasets.
+            We only need a few of them. So let's remove the variables we don't need!
+        </p>
+        <p>
+            Let's say we want to keep the following variable:
+            <ul>
+                <li>Marital Status: <b>dn014_</b></li>
+                <li>Gender: <b>dn042_</b></li>
+                <li>Year of Birth: <b>dn003_</b></li>
+                <li>Smoking: <b>br002_</b></li>
+                <li>Sport Frequency: <b>br015_</b></li>
+                <li>Health self-perception: <b>ph003_</b></li>
+                <li>Pain: <b>ph084_</b></li>
+            </ul>
+        </p>
+        <p>
+            Let's see how to just keep those variables. We'll call our new dataset <i>"df"</i>
+            in order to keep in memory the first merged dataset. Moreover, it makes the code
+            easier to read.
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button5" onclick="toggleCode('rCode5', 'pythonCode5', 'button5')">R</button>
+            
+            <pre id="rCode5"><code>
+df = merged_dataframe %>%
+        select(contains('dn014_'), contains('dn042_'),
+               contains('br002_'), contains('br015_'),
+               contains('ph003_'), contains('ph084_'),
+               contains('dn003_'))
+            </code></pre>
+
+            <pre id="pythonCode5" style="display: none;"><code>
+df = merged_dataframe[['dn014_', 'dn042_',
+                       'br002_', 'br015_',
+                       'ph003_', 'ph084_',
+                       'dn003_']]
+            </code></pre>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
         <h2>Renaming Variables</h2><hr>
         <p>
-            Now that we have our merged dataset, we need to rename the variables. The main reason
-            is that the variables names are not very explicit. For example, the variable <i>"br1"</i>
-            is the variable for the respondent's age. It's not very explicit and it's not very easy
+            Now that we have our merged dataset with only the right variables, we need to rename them. The main reason
+            is that the variables names are not very explicit. For example, the variable <i>"dn014_"</i>
+            is the variable for the respondent's marital status. It's not very explicit and it's not very easy
             to remember. So let's rename it!
         </p>
         <p>
@@ -174,24 +222,37 @@ merged_dataframe = pd.merge(merged_dataframe, ph_dataframe, on = 'mergeid')
         </p>
         <p>
             Also, even if you work with lots of variables, take the time to rename them. It will save you
-            a lot of time in the future (and you'll see that you will just need to run it once thanks to a <b>trick</b>!)
+            a lot of time in the future (and you'll see that you will just need to run it just once thanks to a <b>trick</b>!)
         </p>
 
         <div class="code-container">
-            <button class="lang-btn" id="button5" onclick="toggleCode('rCode5', 'pythonCode5', 'button5')">R</button>
+            <button class="lang-btn" id="button6" onclick="toggleCode('rCode6', 'pythonCode6', 'button6')">R</button>
             
-            <pre id="rCode5"><code>
-names(merged_dataframe)[names(merged_dataframe) == 'br1'] = 'age'
+            <pre id="rCode6"><code>
+df = df %>%
+        rename(
+          MaritalStatus = dn014_,
+          Gender = dn042_,
+          YearOfBirth = dn003_,
+          Smoking = br002_,
+          SportFrequency = br015_,
+          HealthSelfPerception = ph003_,
+          Pain = ph084_
+        )
             </code></pre>
-            
-            <pre id="pythonCode5" style="display: none;"><code>
-merged_dataframe.rename(columns = {'br1': 'age'}, inplace = True)
+
+            <pre id="pythonCode6" style="display: none;"><code>
+df = df.rename(columns={
+    'dn014_': 'MaritalStatus',
+    'dn042_': 'Gender',
+    'dn003_': 'YearOfBirth',
+    'br002_': 'Smoking',
+    'br015_': 'SportFrequency',
+    'ph003_': 'HealthSelfPerception',
+    'ph084_': 'Pain'
+})
             </code></pre>
         </div>
-        <p>
-            From now we have a single dataset with all the variables we need and with explicit names,
-            which is great!
-        </p>
         
         <br>
         <br>
@@ -237,6 +298,11 @@ merged_dataframe.rename(columns = {'br1': 'age'}, inplace = True)
             </ul>
         </p>
         <p>
+            For some reasons, you can find sometimes in the dataset the actual descriptions of the missing
+            codes. For example, you can find <i>"Don't know"</i> instead of <i>-1</i>. This means that you
+            need to check in which format the missing codes are. 
+        </p>
+        <p>
             In this post we will assume that your work is not based on missing values. This means
             that we will transform all the previous missing codes into <i>"real"</i> missing values.
             Concrete example: if a respondent has a missing value for the variable <i>"blabla"</i> because
@@ -245,43 +311,198 @@ merged_dataframe.rename(columns = {'br1': 'age'}, inplace = True)
         </p>
 
         <div class="code-container">
-            <button class="lang-btn" id="button6" onclick="toggleCode('rCode6', 'pythonCode6', 'button6')">R</button>
+            <button class="lang-btn" id="button7" onclick="toggleCode('rCode7', 'pythonCode7', 'button7')">R</button>
             
             <!-- Iterates over all column and transform all missing codes to NA -->
-            <pre id="rCode6"><code>
-values_to_replace = c(-1, -2, -3, -4, -5, -7, -9,
-                      -91, -92, -93, -94, -95, -98,
-                      -99, -9999991, -9999992)
-
-# Iterates over all columns and transform all missing codes to NaN
-for (i in 1:ncol(merged_dataframe)) {
-  merged_dataframe[, i] = ifelse(merged_dataframe[, i] %in% values_to_replace, # values to replace
-                                 NA, # value to replace with
-                                 merged_dataframe[, i])
-}
+            <pre id="rCode7"><code>
+values_to_replace = c("Don't know", "Refusal",
+                      "Implausible value/suspected wrong",
+                      "Not codable", "Not answered",
+                      "Not yet coded", "Not applicable")      
+df = df %>%
+  mutate(across(everything(),
+         ~if_else(. %in% values_to_replace, NA, .)))
             </code></pre>
             
-            <pre id="pythonCode6" style="display: none;"><code>
-values_to_replace = [-1, -2, -3, -4, -5, -7, -9,
-                    -9999991, -9999992, -91, -92,
-                    -93, -94, -95, -98, -99]
-
-# Iterates over all columns and transform all missing codes to NaN
-for i in merged_dataframe.columns:
-    merged_dataframe[i].replace(values_to_replace, # values to replace
-                                np.nan, # value to replace with
-                                inplace = True)
+            <pre id="pythonCode7" style="display: none;"><code>
+values_to_replace = ["Don't know", "Refusal",
+                     "Implausible value/suspected wrong", 
+                     "Not codable", "Not answered",
+                     "Not yet coded", "Not applicable"]
+df.replace(values_to_replace, float('NaN'), inplace=True)
             </code></pre>
         </div>
         <p>
-            Now that we have transformed all the missing codes into <i>"real"</i> missing values, we can
-            start working on our dataset!
+            Now that we have transformed all the missing codes into <i>"real"</i> missing values, we have
+            almost finished!
         </p>
         
         <br>
         <br>
         <br>
 
+        <h2>Data types</h2><hr>
+        <p>
+            Now that we have our dataset with only the variables we need, we need to check the data types.
+            The data types is what your computer will understand. For example, a number is not the same
+            as a text. For a computer, 3 and "3" are not the same. The first one is a number and the second
+            one is a text, and if you want the computer to understand that they are the same, you need to
+            transform the text into a number (or the number into a text).
+        </p>
+        <p>
+            More generally, it can be considered as a good practice to check the data types of your variables. It will
+            allow you to avoid some errors in the future.
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button8" onclick="toggleCode('rCode8', 'pythonCode8', 'button8')">R</button>
+            
+            <pre id="rCode8"><code>
+print(str(df))
+            </code></pre>
+            
+            <pre id="pythonCode8" style="display: none;"><code>
+print(df.dtypes)
+            </code></pre>
+        </div>
+
+        <p>
+            If the output of the previous code is not what you expected, you can change the data type of
+            your variables. In our case, let's say we want to ensure each of our variable has the right data type:
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button9" onclick="toggleCode('rCode9', 'pythonCode9', 'button9')">R</button>
+            
+            <pre id="rCode9"><code>
+df = df %>%
+    mutate(
+      YearOfBirth = as.numeric(YearOfBirth),
+      MaritalStatus = as.factor(MaritalStatus),
+      Gender = as.factor(Gender),
+      Smoking = as.factor(Smoking),
+      SportFrequency = as.factor(SportFrequency),
+      HealthSelfPerception = as.factor(HealthSelfPerception),
+      Pain = as.factor(Pain)
+    )
+            </code></pre>
+            
+            <pre id="pythonCode9" style="display: none;"><code>
+column_types = {
+    'YearOfBirth': 'float',
+    'MaritalStatus': 'category',
+    'Gender': 'category',
+    'Smoking': 'category',
+    'SportFrequency': 'category',
+    'HealthSelfPerception': 'category',
+    'Pain': 'category'
+}
+df = df.astype(column_types)
+                
+            </code></pre>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Some simple modifications</h2><hr>
+        <p>
+            Our dataset is starting to look good! Before going further, we'll apply the following
+            changes:
+            <ul>
+                <li>Change the YearOfBirth variable to Age.</li>
+                <li>Change NaN in categorical columns as "Unknown".</li>
+            </ul> 
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button10" onclick="toggleCode('rCode10', 'pythonCode10', 'button10')">R</button>
+            
+            <pre id="rCode10"><code>
+# Change YearOfBirth to Age
+df = df %>%
+    mutate(Age = 2021 - YearOfBirth) %>%
+    select(-YearOfBirth)
+
+# Change NaN in categorical columns as "Unknown"
+is_categorical = function(x) {
+    is.factor(x) || is.character(x)
+}
+df = df %>%
+    mutate(across(where(is_categorical), ~ if_else(is.na(.), "Unknown", .)))
+            </code></pre>
+
+            <pre id="pythonCode10" style="display: none;"><code>
+# Change YearOfBirth to Age
+df['Age'] = 2021 - df['YearOfBirth']
+df.drop(['YearOfBirth'], axis=1, inplace=True)
+
+# Change NaN in categorical columns as "Unknown"
+categorical_columns = df.select_dtypes(include=['category']).columns
+for col in categorical_columns:
+    df[col] = df[col].cat.add_categories('Unknown').fillna('Unknown')
+            </code></pre>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Last steps before workable dataset</h2><hr>
+        <p>
+            Now that we have our dataset with only the variables we need, we need to check a few
+            things:
+            <ul>
+                <li>What to do with missing values?</li>
+                <li>What to do with outliers?</li>
+            </ul>
+        </p>
+        <p>
+            Unfortunately, there is no right answer to those questions. It depends on your research
+            question and your dataset. Both missing values and outliers can be considered as a complex
+            problem and there are lots of different ways to deal with them. In this post, we will
+            not cover this topic since it's very context dependent.
+        </p>
+        <p>
+            Now we're gonna save the dataset in a csv file. This will allow us to open it without
+            having to run all the previous code. It's a good practice to save your dataset in a csv
+            file since it will allow you to open it easily in the future.
+        </p>
+
+        <div class="code-container">
+            <button class="lang-btn" id="button11" onclick="toggleCode('rCode11', 'pythonCode11', 'button11')">R</button>
+            
+            <pre id="rCode11"><code>
+write.csv(df, 'data/share-cleaned-dataset.csv', row.names = FALSE)
+            </code></pre>
+            
+            <pre id="pythonCode11" style="display: none;"><code>
+df.to_csv('data/share-cleaned-dataset.csv', index=False)
+            </code></pre>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Going further</h2><hr>
+        <p>
+            In this post, we saw how to open datasets, merge them, clean the variables, and other
+            aspects that will make your dataset ready for your analysis in the context of the SHARE
+            survey. We also saw some good practices that will make your work easier and clearer.
+        </p>
+        <p>
+            If you want to go further, check:
+            <ul>
+                <li><a href="unbalanced-dataset-share.html">SHARE: How to deal with unbalanced dataset?</a></li>
+                <li><a href="machine-learning-and-cancer.html">SHARE: Machine learning and cancer prediction</a></li>
+            </ul>
+        </p>
+        <p>
+            This post is the work of <a href='../../about.html'>Joseph Barbier and Thomas Salanova</a>. If you have
+            any questions, feel free to <a href='mailto:joseph.barbierdarnal@gmail.com' target="_blank">contact us</a>!
+        </p>
 
         
         
