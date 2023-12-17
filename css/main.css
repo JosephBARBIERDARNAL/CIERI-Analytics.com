@@ -31,27 +31,48 @@ header, footer {
 }
 
 header {
-    padding: 2rem 0;
+    padding: 1em;
+    background: #1b1a1a;
+    color: #fff;
 }
 
-header .header-container {
-    position: relative; /* Relative positioning for the container */
-    text-align: center;
-    font-size: 30px;
-}
-
-header .header-logo {
-    position: absolute; /* Absolute positioning for the logo */
-    top: 80%; /* Center vertically */
-    transform: translateY(-50%); /* Adjust vertical centering */
-    height: 100px; /* Adjust as needed */
-    width: auto; /* Maintain aspect ratio */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 60px;
+    padding-top: 40px;
 }
 
 header h1 {
-    display: inline-block;
-    margin: 0; /* Removes default margin */
-    /* Additional styling for h1 */
+    font-size: 30px; /* Smaller but prominent size */
+    margin: 0;
+}
+
+header h1 a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+header h1 a:hover {
+    color: #eaeaea; /* Lighter shade on hover */
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    padding-right: 150px; /* Increased spacing */
+}
+
+nav ul li {
+    margin-right: 50px; /* Increased spacing */
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
 }
 
 footer {
@@ -62,7 +83,7 @@ footer {
 .content-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     align-items: center; /* To vertically center align items in each row */
 }
 
@@ -125,21 +146,6 @@ a {
 
 a:hover {
     color: orange; /* Changes color to orange on hover */
-}
-
-nav ul {
-    list-style: none;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline;
-    margin-right: 10px;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
 }
 
 ul li {
