@@ -159,13 +159,14 @@ ul li {
 }
 
 .image-container {
-    width: 32%; /* Adjust the width as per your layout */
+    width: 33%; /* Adjust the width as per your layout */
     text-align: center;
 }
 
 .image-container img {
     width: 100%;
     height: auto;
+    margin: 10px;
     border-radius: 8px; /* Optional, for rounded corners */
     transition: transform 0.4s ease;
 }

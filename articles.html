@@ -4,61 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data and Behavior</title>
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <body>    
-    <header>
-        <div class="header-container">
-            <h1><a href='https://josephbarbierdarnal.github.io/bid.com/index.html'>Behavior, Identity & Data Science</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="https://josephbarbierdarnal.github.io/bid.com/articles.html">Articles</a></li>
-                    <li><a href="https://josephbarbierdarnal.github.io/bid.com/contact.html">Contact</a></li>
-                    <li><a href="https://josephbarbierdarnal.github.io/bid.com/about.html">About</a></li>
-                </ul>
-            </nav>    
-        </div>
-    </header>
-    
+    <div id="header-container"></div>
     <div class="container">
+
+        <h1>Articles</h1><hr>
+        <p>
+            Various articles related to data science, statistics and social sciences.
+        </p>
+
+        <div class="image-row">
+            <div class="image-container">
+                <a href="work-in-progress.html">
+                    <img src="/img/unbalanced-dataset.png" alt="unbalanced-dataset">
+                </a>
+                <p><a href="work-in-progress.html">Imbalanced datasets</a></p>
+            </div>
+            <div class="image-container">
+                <a href="/projects/share/how-to-work-with-share-python-r.html">
+                    <img src="/img/work-share.png" alt="work-share">
+                </a>
+                <p><a href="/projects/share/how-to-work-with-share-python-r.html">Work with SHARE: Python & R</a></p>
+            </div>
+            <div class="image-container">
+                <a href="work-in-progress.html">
+                    <img src="/img/cancer-machine-learning.png" alt="ai-machine-learning">
+                </a>
+                <p><a href="work-in-progress.html">Machine learning overview</a></p>
+            </div>
+        </div>
         <br>
-            <section>
-                <h2>SHARE Survey</h2><hr><br>
-                <div class="content-row">
-                    <div class="image-left">
-                        <a href="articles/share/share.html">
-                            <img src="img/share-eric-logo.svg" alt="Share logo">
-                        </a>
-                    </div>
-                    <div class="text-right">
-                        <p>The <a href='https://share-eric.eu'>Survey of Health, Ageing and Retirement in Europe (SHARE)</a>
-                            is a comprehensive research infrastructure dedicated to the
-                            study of the impacts of health, social, economic, and environmental
-                            policies across the lifespans of European citizens. SHARE's scope
-                            extends beyond Europe, contributing to a broader understanding of
-                            these critical issues. The project boasts an impressive accumulation
-                            of 3,962 publications and over 24 years of experience. It has conducted
-                            530,000 interviews, engaging with 140,000 respondents across 28 countries.
-                        </p>
-                        <p>We are currently working on various analysis of the available data and
-                            we will share our <a href='articles/share/share.html'>results</a> on this website. Our goal is to provide insights
-                            on identity and behavior, using data science and statistics. <strong>Click
-                            on the logo to learn more about this work.</strong>
-                        </p>
-                    </div>
-                </div>
-                <br>
-            </section>
     </div> <!-- end of container -->
+
+    <div id="footer-container"></div>
+    <script src="/script/load-header-footer.js"></script>
+
 </body>
-
-
-
-
-
-
-<footer>
-    <p>Copyright © 2023, Joseph Barbier & Thomas Salanova</p>
-</footer>
 </html>
