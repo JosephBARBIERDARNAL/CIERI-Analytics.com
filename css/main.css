@@ -114,30 +114,6 @@ footer {
     transform: scale(1.1); /* Slightly enlarges the image */
 }
 
-.services {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.service {
-    flex-basis: 20%; /* Adjust the width of each service */
-    margin: 10px;
-    text-align: center;
-}
-
-.service img {
-    width: 100%; /* Adjust the image size as needed */
-    height: auto;
-    margin-top: 10px;
-    transition: transform 0.3s ease;
-}
-
-.service img:hover {
-    transform: scale(1.1); /* Slightly enlarges the image */
-}
-
 a {
     text-decoration: none; /* Removes underline */
     color: #f0e68c; /* A light color, in this case, khaki */
@@ -159,14 +135,15 @@ ul li {
 }
 
 .image-container {
-    width: 33%; /* Adjust the width as per your layout */
+    width: 20%; /* Adjust the width as per your layout */
     text-align: center;
+    padding: 10%;
 }
 
 .image-container img {
     width: 100%;
     height: auto;
-    margin: 10px;
+    margin: 30px;
     border-radius: 8px; /* Optional, for rounded corners */
     transition: transform 0.4s ease;
 }
@@ -176,7 +153,7 @@ ul li {
 }
 
 .image-container img:hover {
-    transform: scale(1.05); /* Slightly enlarges the image */
+    transform: scale(1.02); /* Slightly enlarges the image */
 }
 
 .image-row p {
@@ -235,4 +212,9 @@ code {
     padding: 0; /* You can adjust this if additional padding is needed */
 }
 
+@media screen and (max-width: 1200px) {
+    .container {
+        width: 90%;
+    }
+}
 
