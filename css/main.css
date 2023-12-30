@@ -135,25 +135,23 @@ ul li {
 }
 
 .image-container {
-    width: 20%; /* Adjust the width as per your layout */
+    width: 30%; /* Adjust the width as per your layout */
     text-align: center;
-    padding: 10%;
 }
 
 .image-container img {
     width: 100%;
     height: auto;
-    margin: 30px;
     border-radius: 8px; /* Optional, for rounded corners */
     transition: transform 0.4s ease;
 }
 
 .image-container p {
-    margin-top: 8px;
+    margin-top: 0px;
 }
 
 .image-container img:hover {
-    transform: scale(1.02); /* Slightly enlarges the image */
+    transform: scale(1.05); /* Slightly enlarges the image */
 }
 
 .image-row p {
