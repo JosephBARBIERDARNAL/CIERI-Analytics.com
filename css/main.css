@@ -9,6 +9,10 @@ body {
     color: white; /* White text */
 }
 
+html, body {
+    overflow-x: hidden;
+}
+
 h1 {
     text-align: center;
 }

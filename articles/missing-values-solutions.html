@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W4TQWGW3QY"></script>
+    <script src="/script/google-analytics.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIERI Analytics</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>    
+    <div id="header-container"></div>
+    <br>
+    <br>
+
+    <div class="container">
+        <h1>Missing values: how to go beyond the mean and the mode?</h2><hr>
+        <p>
+            Missing values (NA or NaN) is one of the most common problems in data science. NA values can be
+            problematic because they can lead to biased results. For example, if you want to know the average
+            revenue of a population, and you have missing values, you might have problems such as:
+            <ul>
+                <li>Maybe rich people are more likely to not answer the question</li>
+                <li>Maybe poor people are more likely to not answer the question</li>
+                <li>Maybe people who are not rich nor poor are more likely to not answer the question</li>
+                <li>Maybe NA values are randomly distributed</li>
+            </ul>
+            In this post, we will go over the following points:
+            <ul>
+                <li>Why not keeping the NA?</li>
+                <li>What are the different types of missing values?</li>
+                <li>Easy and better solutions than the mean and the mode</li>
+                <li>Complex solutions</li>
+            </ul>
+        </p>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <h2>Why not keeping the NA?</h2><hr>
+        <p>
+            A naive solution to the problem of missing values is to just keep the NA values.
+            Even tough NA generally cause problems when doing statistical analysis, there are tools
+            that allow you to keep the NA values. For example, you can use a <a
+            href='https://scikit-learn.org/stable/modules/ensemble.html#histogram-based-gradient-boosting'
+            target="_blank"> histogram-based gradient boosting</a> model that can handle NA values. These models can work
+            either with numerical or categorical variables. However, this solution is not always the best
+            and does not allows you to explore as much as you would like your data.
+        </p>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Different types of missing values</h2><hr>
+        <p>
+            There are different types of missing values:
+            <ul>
+                <li>MCAR: Missing Completely At Random. This concerns NA whose absence is determined purely
+                    at random and does not depend on the individuals. This is a rather rare situation.</li>
+                <li>MAR: Missing At Random. The probability of being missing is the same only within groups
+                    defined by the observed data. The missingness is related to the observed data but not
+                    the unobserved data.</li>
+                <li>MNAR: Missing Not At Random. The probability of being missing varies for reasons that are 
+                    unknown to the researcher and related to the missing data itself.</li>
+                <li>Structurally missing. Missingness that occurs due to the structure of the data. For
+                    example, in a survey, a question about pregnancy might only be presented to female
+                    respondents, so male respondents would have structurally missing values for this item.</li>
+            </ul>
+        </p>
+        <p>
+            Why does it matter? Because the way you deal with NA depends on the type of missing
+            values. For example, if you have MCAR and a high enough sample size, you can just drop the rows
+            with NA. If you have MNAR, your estimations will be biased if you do not take into
+            account the NA.
+        </p>
+
+            
+    
+        <br>
+        <br>
+        <br>
+
+        <h2>Going further</h2><hr>
+        <p>
+            In this post, we saw that the "all other things being equal" expression is used to say that you are
+            looking at the effect of one variable on another, while keeping all other variables constant. We also
+            saw that this expression has an impact on the interpretation of the coefficients. Finally, we saw that
+            the Frisch-Waugh-Lovell theorem is a theorem that allows you to get the same results as if you had
+            run a regression with all the variables, while only running a regression with one variable.
+        </p>
+        <p>
+            If you want to go further, check:
+            <ul>
+                <li><a href="ai-vs-machine-learning.html">Difference between Artificial Intelligence and Machine Learning</a></li>
+            </ul>
+        </p>
+        <p>
+            This post is the work of <a href='/about.html'>Joseph Barbier and Thomas Salanova</a>. If you have
+            any questions, feel free to <a href='mailto:joseph.barbierdarnal@gmail.com' target="_blank">contact us</a>!
+        </p>
+
+    </div> <!-- end container -->
+<div id="footer-container"></div>
+
+<script src="/script/button-switch-language.js"></script>
+<script src="/script/load-header-footer.js"></script>
+
+</body>
+</html>
