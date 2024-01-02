@@ -36,7 +36,7 @@
                 <li>Why not keeping the NA?</li>
                 <li>What are the different types of missing values?</li>
                 <li>Easy and better solutions than the mean and the mode</li>
-                <li>Complex solutions</li>
+                <li>More complex solutions</li>
             </ul>
         </p>
 
@@ -83,8 +83,74 @@
             account the NA.
         </p>
 
-            
+        <br>
+        <br>
+        <br>
+
+        <h2>Easy and better solutions than the mean and the mode</h2><hr>
+        <p>
+            It's a very common practice to replace NA values by the mean or the mode. However, this is not
+            a very good practice. Indeed, this practice can lead to biased results. For example, if you have
+            missing values in the Age variable, and you replace the NA values by the mean, you will have a
+            lower Age variance. The good news is that maybe you don't even need to replace the NA values with
+            an estimation!
+        </p>
+        <p>
+            At each of the 3 following steps, you should check if there are still NA, because it's not 
+            necessarily the case after. 
+        </p>
+        <br><h3>1 - Very first thing to do</h3>
+        <p>
+            The very first you should do before anything is to drop observations/variables that have
+            100% NA values. By doing this, you don't take any risk (these observations/variables couldn't
+            be used anyway) and you reduce the number of NA.
+        </p>
+        <br><h3>2 - Search for structurally missing values</h3>
+        <p>
+            Then, you should check if there are structurally missing values. For example, if you have a
+            variable about the number of cigarettes consumed per day with NA values, you should check if
+            these NA values are for non-smokers. If it's the case, you can replace the NA values by 0.
+            This can bring lots of work if you have lots of variables, but it's the best way to deal with
+            structurally missing values. Also, it means that you should have a good understanding of the
+            data you are working with.
+        </p>
+        <br><h3>3 - Replace NA by a new category</h3>
+        <p>
+            If you have categorical variables, you can replace NA values by a new category. For example,
+            if you have a variable about the marital status with NA values, you can replace the NA values
+            by "unknown", also known as explicit NA. By doing this, you don't take any risk and you don't lose information. The one
+            problem that comes with it is that you increase the number of categories and that maybe all
+            married people will be categorized as "married" and "unknown", which is not ideal.
+        </p>
+        <br>
+        <p>
+            With these three steps, you have a good start of reducing the number of NA values without
+            using any estimation and made your data more understandable. However, you might still have
+            NA values, especially in numerical variables.
+        </p>
     
+        <br>
+        <br>
+        <br>
+
+        <h2>More complex solutions</h2><hr>
+        <p>
+            If you still have NA values, you can use more complex solutions. These solutions are more
+            complex because they use estimations, modelling, etc. However, they are still easy to
+            implement and can bring a lot of value to your analysis.
+        </p>
+        <p>
+            We'll go over 3 solutions with references on how to implement them in Python and R:
+            <ul>
+                <li>Imputation by regression</li>
+                <li>Imputation by KNN</li>
+                <li>Imputation by MICE</li>
+            </ul>
+        </p>
+        <p>
+            This section is a work in progress.
+        </p>
+
         <br>
         <br>
         <br>
@@ -100,7 +166,8 @@
         <p>
             If you want to go further, check:
             <ul>
-                <li><a href="ai-vs-machine-learning.html">Difference between Artificial Intelligence and Machine Learning</a></li>
+                <li><a href="/articles/ai-vs-machine-learning.html">Difference between artificial intelligence and machine learning</a></li>
+                <li><a href="/articles/all-other-things-being-equal.html">All other things being equal: what does this really mean?</a></li>
             </ul>
         </p>
         <p>
