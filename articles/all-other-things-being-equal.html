@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W4TQWGW3QY"></script>
+    <script src="/script/google-analytics.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIERI Analytics</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>    
+    <div id="header-container"></div>
+    <br>
+    <br>
+
+    <div class="container">
+        <h1>All other things being equal: why is this so?</h2><hr>
+        <p>
+            When you are working with data, you will often hear the expression "all other things being equal".
+            This expression is used to say that you are looking at the effect of one variable on another, while
+            keeping all other variables constant. For example, if you want to know the effect of age on the
+            probability of having cancer, you will want to keep all other variables constant. This is because
+            if you don't, you will not be able to know if the effect you are seeing is due to age or to another
+            variable.
+        </p>
+        <p>
+            For example, if you don't keep all other variables constant, you might see that the
+            probability of having cancer increases with age. But this might be because older people are more
+            likely to smoke, and smoking is a risk factor for cancer.
+        </p>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <h2>TLDR</h2><hr>
+        <p>
+            This post focus on the "all other things being equal" expression in the context of linear regression.
+            We will go over the following points:
+            <ul>
+                <li>What is the "all other things being equal" expression?</li>
+                <li>Impact on interpretation of the coefficients</li>
+                <li>Frisch-Waugh-Lovell theorem</li>
+            </ul>
+        </p>
+        <h3>What is the "all other things being equal" expression?</h3>
+        <p>
+            The "all other things being equal" expression is used to say that you are looking at the effect of one
+            variable on another, while keeping all other variables constant. For example, if you want to know the
+            effect of age on the probability of having cancer, you will want to keep all other variables constant.
+            This is because if you don't, you will not be able to know if the effect you are seeing is due to age
+            or to another variable.
+        </p>
+        <h3>Impact on interpretation of the coefficients</h3>
+        <p>
+            Once you have run a regression, you have a model that looks like this:
+            $$\hat y = \hat\beta_0 + \hat\beta_1 x_1 + \hat\beta_2 x_2 + \hat\beta_3 x_3$$
+            where \(\hat y\) is the predicted value \(x_i\) is the value of the \(i\)-th variable and \(\hat\beta_i\) is
+            the estimated coefficient of the \(i\)-th variable. The interpretation of the coefficients is the
+            following: if you increase \(x_i\) by 1, then \(\hat y\) will increase by \(\hat\beta_i\), all other
+            things being equal. This interpretation is based on the assumption that all other variables are constant.
+        </p>
+        <h3>Frisch-Waugh-Lovell theorem</h3>
+        <p>
+            The Frisch-Waugh-Lovell theorem is a theorem that allows you to get the same results as if you had
+            run a regression with all the variables, while only running a regression with one variable. More formally,
+            it says that if you want to know the effect of \(x_1\) on \(y\), while keeping \(x_2\) and \(x_3\) constant,
+            you can run the following two regressions:
+            $$\hat y = \hat\beta_0 + \hat\beta_1 x_1 + \hat\beta_2 x_2 + \hat\beta_3 x_3$$
+            $$\hat x_2 = \hat\gamma_0 + \hat\gamma_1 x_1 + \hat\gamma_3 x_3$$
+            Then, the coefficient of \(x_1\) in the first regression will be the same as the coefficient of \(x_1\)
+            in the second regression. This is because the coefficient of \(x_1\) in the first regression is the
+            effect of \(x_1\) on \(y\), while keeping \(x_2\) and \(x_3\) constant. And the coefficient of \(x_1\)
+            in the second regression is the effect of \(x_1\) on \(x_2\), while keeping \(x_3\) constant. So, the
+            Frisch-Waugh-Lovell theorem says that the effect of \(x_1\) on \(y\), while keeping \(x_2\) and \(x_3\)
+            constant, is the same as the effect of \(x_1\) on \(x_2\), while keeping \(x_3\) constant.
+        </p>
+            
+    
+        <br>
+        <br>
+        <br>
+
+        <h2>Going further</h2><hr>
+        <p>
+            In this post, we saw that the "all other things being equal" expression is used to say that you are
+            looking at the effect of one variable on another, while keeping all other variables constant. We also
+            saw that this expression has an impact on the interpretation of the coefficients. Finally, we saw that
+            the Frisch-Waugh-Lovell theorem is a theorem that allows you to get the same results as if you had
+            run a regression with all the variables, while only running a regression with one variable.
+        </p>
+        <p>
+            If you want to go further, check:
+            <ul>
+                <li><a href="ai-vs-machine-learning.html">Difference between Artificial Intelligence and Machine Learning</a></li>
+            </ul>
+        </p>
+        <p>
+            This post is the work of <a href='/about.html'>Joseph Barbier and Thomas Salanova</a>. If you have
+            any questions, feel free to <a href='mailto:joseph.barbierdarnal@gmail.com' target="_blank">contact us</a>!
+        </p>
+
+    </div> <!-- end container -->
+<div id="footer-container"></div>
+
+<script src="/script/button-switch-language.js"></script>
+<script src="/script/load-header-footer.js"></script>
+
+</body>
+</html>

@@ -12,4 +12,11 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             document.getElementById('footer-container').innerHTML = data;
         });
+
+    // Load the footer for articles
+    fetch('/templates/head.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('head-container').innerHTML = data;
+        });
 });
