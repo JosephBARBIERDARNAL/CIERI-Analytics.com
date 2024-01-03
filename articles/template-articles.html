@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W4TQWGW3QY"></script>
+    <script src="/script/google-analytics.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CIERI Analytics is a blog about identity, behavior and data science">
+    <meta name="keywords" content="keyword1, keyword2, keyword3, analytics, data science, identity, data, science, machine learning, artificial intelligence, AI, ML, statistics, R, python, data analysis, research, behavior, psychology, social science">
+    <meta name="author" content="Thomas Salanova and Joseph Barbier">
+    <title>CIERI Analytics</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>    
+    <div id="header-container"></div>
+    <br>
+    <br>
+
+    <div class="container">
+        <h1>Title</h2><hr>
+        <p>
+            Introductive paragraph
+        </p>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <h2>A section</h2><hr>
+        <p>
+            Here goes what you want to say
+        </p>
+        <p>
+            You can write multiple paragraphs
+        </p>
+        <p>
+            Even some bullet points
+            <ul>
+                <li>first point</li>
+                <li>another one</li>
+            </ul>
+            And that's it
+        </p>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Another section</h2><hr>
+        <p>
+            print("Hello world")
+        </p>
+        <p>
+            Centered math equation:
+            $$\hat \beta = (X^T X)^{-1}X^T y$$
+        </p>
+        <p>
+            Not centered math equation:
+            \( \hat \beta = (X^T X)^{-1}X^T y \)
+        </p>
+        <p>
+            How to display some code:
+            <div class="code-container">
+                <pre><code>
+library('dplyr')
+                </code></pre>
+            </div>
+        </p>
+        <p>
+            How to display some code with a switch button:
+            <div class="code-container">
+                <button class="lang-btn" id="button-name" onclick="toggleCode('rCode', 'pythonCode', 'button-name')">R</button>
+                
+                <pre id="rCode"><code>
+library('dplyr')
+                </code></pre>
+                
+                <pre id="pythonCode" style="display: none;"><code>
+import pandas as pd
+                </code></pre>
+            </div>
+        </p>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Going further</h2><hr>
+        <p>
+            In this post, we saw <i>[insert here a brief recap]</i>
+        </p>
+        <p>
+            If you want to go further, check:
+            <ul>
+                <li><a href="/articles/missing-values-solutions.html">Dealing with missing values: beyond the meand and the mode</a></li>
+                <li><a href="/articles/all-other-things-being-equal.html">All other things being equal: what does this really mean?</a></li>
+            </ul>
+        </p>
+        <p>
+            This post is the work of <a href='/about.html'>Joseph Barbier and Thomas Salanova</a>. If you have
+            any questions, feel free to <a href='mailto:joseph.barbierdarnal@gmail.com' target="_blank">contact us</a>!
+        </p>
+
+        
+        
+    </div> <!-- end container -->
+<div id="footer-container"></div>
+
+<script src="/script/button-switch-language.js"></script>
+<script src="/script/load-header-footer.js"></script>
+
+</body>
+</html>
