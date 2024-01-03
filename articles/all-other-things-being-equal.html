@@ -11,7 +11,7 @@
     <meta http-equiv="Cache-control" content="no-cache">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="CIERI Analytics is a blog about identity, behavior and data science">
-    <meta name="keywords" content="analytics, data science, identity, data, science, machine learning, artificial intelligence, AI, ML, statistics, data analysis, research, behavior, psychology, social science">
+    <meta name="keywords" content="frisch waugh lovell theorem, all other things being equal, econometrics, psychometrics, linear regression, data science, identity, data, science, machine learning, artificial intelligence, AI, ML, statistics, R, python, data analysis, research, behavior, psychology, social science">
     <meta name="author" content="Thomas Salanova and Joseph Barbier">
     <title>CIERI Analytics</title>
     <link rel="stylesheet" href="/css/main.css">
@@ -43,17 +43,7 @@
         <br>
         <br>
 
-        <h2>TLDR</h2><hr>
-        <p>
-            This post focus on the "all other things being equal" expression in the context of linear regression.
-            We will go over the following points:
-            <ul>
-                <li>What is the "all other things being equal" expression?</li>
-                <li>Impact on interpretation of the coefficients</li>
-                <li>Frisch-Waugh-Lovell theorem</li>
-            </ul>
-        </p>
-        <br><h3>What is the "all other things being equal" expression?</h3>
+        <h2>What is the "all other things being equal" expression?</h2><hr>
         <p>
             The "all other things being equal" expression is used to say that you are looking at the effect of one
             variable on another, while keeping all other variables constant. For example, if you want to know the
@@ -61,7 +51,17 @@
             This is because if you don't, you will not be able to know if the effect you are seeing is due to age
             or to another variable.
         </p>
-        <br><h3>Impact on interpretation of the coefficients</h3>
+        <p>
+            Even if this concept might feel pretty intuitive, there is a formal theorem that explains in more
+            depth how it works, called the Frisch-Waugh-Lovell theorem. In this post, we will explain in details
+            this expression, this theorem and make the proof of it.
+        </p>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Impact on interpretation of the coefficients</h2><hr>
         <p>
             Once you have run a regression, you have a model that looks like this:
             $$\hat y = \hat\beta_0 + \hat\beta_1 x_1 + \hat\beta_2 x_2 + \hat\beta_3 x_3$$
@@ -70,22 +70,108 @@
             following: if you increase \(x_i\) by 1, then \(\hat y\) will increase by \(\hat\beta_i\), all other
             things being equal. This interpretation is based on the assumption that all other variables are constant.
         </p>
-        <br><h3>Frisch-Waugh-Lovell theorem</h3>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Frisch-Waugh-Lovell theorem</h2><hr>
+        <h3>Main concepts</h3>
         <p>
-            The Frisch-Waugh-Lovell theorem is a theorem that allows you to get the same results as if you had
-            run a regression with all the variables, while only running a regression with one variable. More formally,
-            it says that if you want to know the effect of \(x_1\) on \(y\), while keeping \(x_2\) and \(x_3\) constant,
-            you can run the following two regressions:
-            $$\hat y = \hat\beta_0 + \hat\beta_1 x_1 + \hat\beta_2 x_2 + \hat\beta_3 x_3$$
-            $$\hat x_2 = \hat\gamma_0 + \hat\gamma_1 x_1 + \hat\gamma_3 x_3$$
-            Then, the coefficient of \(x_1\) in the first regression will be the same as the coefficient of \(x_1\)
-            in the second regression. This is because the coefficient of \(x_1\) in the first regression is the
-            effect of \(x_1\) on \(y\), while keeping \(x_2\) and \(x_3\) constant. And the coefficient of \(x_1\)
-            in the second regression is the effect of \(x_1\) on \(x_2\), while keeping \(x_3\) constant. So, the
-            Frisch-Waugh-Lovell theorem says that the effect of \(x_1\) on \(y\), while keeping \(x_2\) and \(x_3\)
-            constant, is the same as the effect of \(x_1\) on \(x_2\), while keeping \(x_3\) constant.
+            The Frisch-Waugh-Lovell (FWL) theorem allows us to reduce a multivariate regression
+            analysis to an univariate one. The main idea behind is the fact that there are mutliple
+            ways to estimate a \(\beta_1\) coefficient in the following regression model:
+            $$y = \beta_1x_1 + \beta_2x_2 + \varepsilon$$
+            The main idea behind this is to use the residuals of the regression of \(x_1\) on
+            \(x_2\) as the regressor of \(y\).
         </p>
-            
+        <p>
+            The theorem says that all of these are equivalent for estimate \(\beta_1\):
+            <ul>
+                <li>Estimation by regressing \(y\) on \(x1\) and \(x2\)</li>
+                <li>Estimation by regressing \(y\) on the residual from the regression of \(x1\) on \(x2\), generally called <b>orthogonalization</b> or <b>residualization</b></li>
+                <li>Estimation by regressing the residual from the regression of \(y\) on \(x2\) on the residual from the regression of \(x1\) on \(x2\)</li>
+            </ul>
+        </p>
+        <h3>Proof</h3>
+        <p>
+            Before going any further, you might want to check an excellent article called <a
+            href="https://medium.com/@vladimirmikulik/why-linear-regression-is-a-projection-407d89fd9e3a"
+            target="_blank">Why Linear Regression is a Projection</a>. This article will give you the taste of why
+            we can talk about linear regression with projections and some linear algebra tools, very
+            useful for the following demonstration. 
+        </p>
+        <p>
+            We assume the following regression: $$\hat y = X\hat\beta_1 + Z\hat\beta_2 + r$$
+            Where:
+            <ul>
+                <li>\(\hat y\) is the continuous variable we want to predict</li>
+                <li>\(X\) and \(Z\) are our predictors (vector or matrix, no differences)</li>
+                <li>\(\hat\beta_1\) and \(\hat\beta_2\) our estimation using <b>least squared ordinary</b> (LSO) method</li>
+                <li>\(r\) the residuals of the estimation</li>
+            </ul>
+        </p>
+        <p>
+            Once this simple regression is posed, let's recall some useful properties:
+            <ul>
+                <li>If there is no collinarity between our explanatory variables, the best fit to the least squares problem is unique</li>
+                <li>Any matrix of variables can be split in its projection. For our regression above, it means that we can re-write \(Z = P_XZ + M_XZ\), where \(P_X\) is the projection to \(X\) and \(M_X\) the <b>residual makers</b> for \(X\). Also, we have: \(M_X = I - P_X\)</li>
+                <li>A regression on orthogonal sets of regressors can be done on each set at a time while still getting the coefficients from the joint regression</li>
+            </ul>
+        </p>
+        <p>
+            In order to go from \(\hat{\beta} = (X^TX)^{-1}X^Ty\) (the OLS estimator) into the projection \(\hat{y}\), we only have
+            to multiple it by \(X\), which gives us:
+            $$X\hat\beta = X(X^TX)^{-1}X^Ty = P_xy =\hat{y}$$
+            $$P_x = X(X^TX)^{-1}X^T$$
+            Now, let's say we have the two following estimations:
+            $$y = X\hat{\beta_1} + Z\hat{\beta_2} + r_1$$
+            $$M_Z y = M_Z X\hat{\beta_3} + r_2$$
+            $$M_Z = I - P_Z = I - Z(Z^TZ)^{-1}Z^T = residual~makers$$
+        </p>
+        <p>
+            What we want to prove with this theorem is:
+            $$\hat{\beta_1} = \hat{\beta_3}$$
+        </p>
+        <p>
+            We re-write our first estimation by multiplying it by \(M_Z\)
+            $$M_Z y = M_Z X\hat{\beta_1} + M_Z X\hat{\beta_2} + M_Z r_1$$
+            With:
+            <ul>
+                <li>\(M_ZZ\hat{\beta_2} = (I - Z(Z^TZ)^{-1}Z^T)Z\hat{\beta_2} = Z\hat{\beta_2} - Z(Z^TZ)^{-1}Z^TZ\hat{\beta_2} = Z\hat{\beta_2} - Z\hat{\beta_2} = 0\)</li>
+                <li>\(M_Zr_1 = (I - Z(Z^TZ)^{-1}Z^T)r_1 = r_1 - Z(Z^TZ)^{-1}Z^Tr_1 = r_1 - ZZ^{-1}(Z^T)^{-1} Z^Tr_1 = r_1 - 0 = r_1\)</li>
+            </ul>
+            So we now have:
+            $$M_Zy = M_ZX\hat{\beta_1} + r_1$$
+        </p>
+        <p>
+            We now multiply it by \(X^T\)
+            $$X^TM_Zy = X^TM_ZX\hat{\beta_1} + X^Tr_1$$
+            With:
+            <ul><li>\(X^Tr_1 = X^T(y - X\hat{\beta_1} - Z\hat{\beta_2}) = X^Ty - X^T(X\hat{\beta_1} + Z\hat{\beta_2}) = X^Ty - X^Ty = 0\)</li></ul>
+            So we now have:
+            $$X^TM_Zy = X^TM_ZX\hat{\beta_1}$$
+        </p>
+        <p>
+            We multiple the second estimation by \((M_ZX)^T\)
+            $$(M_ZX)^TM_Zy = X^TM_Z^TM_Zy =  X^TM_Z^T(M_Z X\hat{\beta_3} + r_2)$$
+            $$= X^TM_Z^TM_ZX\hat{\beta_3} + X^TM_Z^Tr_2$$
+            With:
+            <ul><li>\(X^TM_Z^Tr_2 = X^TM_Z^T(M_Z y - M_Z X\hat{\beta_3}) = X^TM_Z^TM_Z (y - X\hat{\beta_3}) = 0\)</li></ul>
+            So we have:
+            $$X^T M_Zy = X^T M_Z X \hat{\beta_3}$$
+        </p>
+        <h3>Conclusion of this proof</h3>
+        <p>We proved that \(X^TM_Zy = X^TM_ZX\hat{\beta_1}\).</p>
+        <p>We also proved that \(X^TM_Zy = X^TM_ZX\hat{\beta_3}\).</p>
+        <p>So we can conclude that \(y = X_1\hat{\beta_1} = X_1\hat{\beta_3}\) and \(\hat{\beta_1} = \hat{\beta_3}\).</p>
+        <p>
+            As you have seen, the demonstration goes in all directions and is not easy to follow if you
+            don't do the calculations yourself. It's probably not useful to master this
+            demonstration, but it's good to manipulate the equations a little bit to improve your
+            intuition. Hope this has helped you if you are trying to understand this theorem better.
+        </p>
+
     
         <br>
         <br>
@@ -102,7 +188,8 @@
         <p>
             If you want to go further, check:
             <ul>
-                <li><a href="ai-vs-machine-learning.html">Difference between Artificial Intelligence and Machine Learning</a></li>
+                <li><a href="/articles/ai-vs-machine-learning.html">Difference between Artificial Intelligence and Machine Learning</a></li>
+                <li><a href="/articles/missing-values-solutions.html">Dealing with missing values: beyond the meand and the mode</a></li>
             </ul>
         </p>
         <p>
