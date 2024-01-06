@@ -1,6 +1,6 @@
 from nbconvert import HTMLExporter
 from bs4 import BeautifulSoup
-
+import os
 
 def remove_tags(soup, tags, css_class=None):
     for elements in soup.find_all(tags, class_=css_class):
@@ -47,5 +47,10 @@ def convert_notebook(notebook_path, template_path='templates/template-notebook.h
         file.write(str(soup_template))
 
 # Example usage
-notebook_path = 'projects/share/code/work-with-share.ipynb'
+notebook_path = 'projects/share/cancer-visualization.ipynb'
 convert_notebook(notebook_path)
+
+# open the converted file in the browser
+command = f"""open http://localhost:8000/{convert_to_html_path(notebook_path)}
+          python -m http.server"""
+os.system(command)
