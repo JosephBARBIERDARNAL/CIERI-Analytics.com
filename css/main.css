@@ -5,8 +5,8 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #0d0d0d; /* Dark background */
-    color: white; /* White text */
+    background-color: white; /* Dark background */
+    color: #0d0d0d; /* White text */
 }
 
 html, body {
@@ -44,7 +44,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 60px;
+    padding-left: 80px;
     padding-top: 40px;
 }
 
@@ -120,12 +120,13 @@ footer {
 
 a {
     text-decoration: none; /* Removes underline */
-    color: #f0e68c; /* A light color, in this case, khaki */
+    color: rgb(67, 2, 107); /* A light color, in this case, khaki */
     transition: color 0.5s ease; /* Adds a transition effect */
+    font-weight: bold;
 }
 
 a:hover {
-    color: orange; /* Changes color to orange on hover */
+    color: rgb(109, 3, 176); /* Changes color to orange on hover */
 }
 
 ul li {
