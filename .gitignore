@@ -2,4 +2,5 @@
 brouillon.docx
 /other/
 /.venv/
-/ne_110m_admin_0_countries/
+ne_110m_admin_0_countries/
+.ipynb_checkpoints/
