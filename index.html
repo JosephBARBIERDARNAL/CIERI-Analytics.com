@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script type="text/javascript" id="MathJax-script" async
@@ -20,7 +20,10 @@
 
 <body>    
     <div id="header-container"></div>
-    <div class="container">        
+    <button type="button" data-theme-toggle aria-label="Change to light theme">
+        <img src="/img/logo/light.png" alt="Light Mode Logo">
+    </button>
+    <div class="container">
         
         <br><br><br>
         <h1>Accelerate analysis, create tools and develop data processing methods for the social sciences</h1><hr>
@@ -52,6 +55,7 @@
 
     <div id="footer-container"></div>
     <script src="/script/load-header-footer.js"></script>
+    <script src="/script/theme-toggle.js"></script>
 
 </body>
 </html>

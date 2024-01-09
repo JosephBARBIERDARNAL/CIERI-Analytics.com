@@ -1,12 +1,45 @@
 /* main.css */
+:root {
+    --grid-unit: 1rem;
+    --border-radius-base: 0.5rem;
+}
+  
+[data-theme="light"] {
+    --color-bg: white;
+    --color-fg: #0d0d0d;
+}
+  
+[data-theme="dark"] {
+    --color-bg: #0d0d0d;
+    --color-fg: white;
+}
+
+button {
+    max-width: 40px;
+    border: none; /* Ensures no borders */
+    background: none; /* Removes any background styles */
+    padding: 0; /* Removes padding inside the button */
+    outline: none; /* Removes the focus outline */
+    cursor: pointer; /* Changes cursor to pointer to indicate it's clickable */
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+/* Styles for img within the button */
+button img {
+    max-width: 100%; /* Ensures the image scales to the button's size */
+    display: block; /* Removes any default inline styling */
+}
+
+
 body {
     font-family: Trebuchet MS, sans-serif;
     font-size: 22px;
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: white; /* Dark background */
-    color: #0d0d0d; /* White text */
+    background-color: var(--color-bg); /* Dark background */
+    color: var(--color-fg); /* White text */
 }
 
 html, body {
@@ -125,8 +158,12 @@ a {
     font-weight: bold;
 }
 
-a:hover {
+a:hover :not(.header-container) {
     color: rgb(109, 3, 176); /* Changes color to orange on hover */
+}
+
+.header-container a:hover :not(h1) {
+    color: darkorange; /* Slightly lighter orange on hover */
 }
 
 ul li {
@@ -257,6 +294,12 @@ code {
     border: 1px solid #ddd;
     text-align: center;
     font-size: 14px;
+}
+
+iframe {
+    width: 100%;
+    height: 550px;
+    border: none;
 }
 
 @media screen and (max-width: 900px) {
