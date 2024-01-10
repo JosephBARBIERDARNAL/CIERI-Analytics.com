@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W4TQWGW3QY"></script>
+    <script src="/script/google-analytics.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CIERI Analytics is a blog about identity, behavior and data science">
+    <meta name="keywords" content="keyword1, keyword2, keyword3, analytics, data science, identity, data, science, machine learning, artificial intelligence, AI, ML, statistics, R, python, data analysis, research, behavior, psychology, social science">
+    <meta name="author" content="Thomas Salanova and Joseph Barbier">
+    <title>CIERI Analytics</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>    
+    <div id="header-container"></div>
+    <br>
+    <br>
+
+    <div class="container">
+        <h1>Large sample size and p-value</h2><hr>
+        <p>
+            When learning statistics, we are often told that a large sample size is good because it allows us to
+            have a larger power. But what does it mean exactly? And how does it relate to the p-value?
+        </p>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <h2>What p-value measures?</h2><hr>
+        <p>
+            What we generally forget to tell is that the p-value is a function of the sample size. In other words,
+            the p-value is not a fixed value. It depends on the sample size. The larger the sample size, the smaller
+            the p-value, independently of the effect size.
+        </p>
+        <p>
+            The p-value is the probability of observing a result at least as extreme as the one we observed, given
+            that the null hypothesis is true. For example, in the context of linear regression that looks like:
+            $$\hat y = \hat \beta_0 + \hat \beta_1 x_1$$
+            where \( \hat y \) is the predicted value, \( \hat \beta_0 \) is the intercept, \( \hat \beta_1 \) is the coefficient
+            of \( x_1 \) and \( x_1 \) is the predictor. The null hypothesis is that \( \hat \beta_1 = 0 \). The p-value is the
+            probability of observing a coefficient at least as extreme as \( \hat \beta_1 \), given that \(\hat \beta_1 = 0 \).
+        </p>
+        <p>
+            The most common use of the p-value is to compare it to a threshold, usually 0.05. If the p-value is smaller
+            than 0.05, we reject the null hypothesis. Put another way, we consider that what we observe is unlikely to
+            happen if the null hypothesis is true. In other words, we consider that the null hypothesis is unlikely to
+            be true, and we conclude that the alternative hypothesis is more likely to be true (the alternative
+            hypothesis is that \( \hat \beta_1 \neq 0 \)).
+        </p>
+        <p>
+            The main thing to have in mind is that the p-value does not measure how large the effect of \( x_1 \) is
+            on \( \hat y \). It only measures if the effect is statistically significant. In other words, it only
+            measures if the difference between the null hypothesis and what we observe is likely to be due to chance.
+        </p>
+
+        
+
+        <br>
+        <br>
+        <br>
+
+        <h2>How does it relate to the sample size?</h2><hr>
+        <p>
+            Using the p-value as a criterion with large sample sizes (and frequentist statistics more generally) can be a problem.
+            We will see how easy it is to find false positives when testing the significance of a coefficient
+            in linear regression. We want to show that, for a low level of correlation, it is enough to have a large
+            enough sample size to obtain a significant p-value (which is exactly the same as having a sufficiently high
+            t statistic). Even if the demonstration is not really important here, the conclusion is important and should
+            be known by all those who use p-value as a decision criterion.
+        </p>
+        <p>
+            In the context of linear regression, when we want to test the significance of a coefficient, we compute
+            the t statistic. The t statistic is the ratio of the coefficient to its standard error. More formally:
+            $$t = \frac{\hat\beta_1 - 0}{\hat\sigma_{\hat\beta}}$$
+            where \( \hat\sigma_{\hat\beta} \) is the standard error of \( \hat \beta_1 \). The 0 in the numerator
+            is the value of the null hypothesis (we test if \( \hat \beta_1 \) is significantly different from 0).
+        </p>
+        <p>
+            Intuitively, we would like the t statistic is be proportional to the effect size. In other words, we would
+            like the t statistic to be large when the effect size is large, and small when the effect size is small.
+            And that's actually the case! The t statistic is proportional to the effect size. But it is also inversely
+            proportional to the standard error, and the standard error is inversely proportional to the sample size.
+            Put another way, the larger the sample size, the smaller the standard error, and the larger the t statistic.
+        </p>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Where does the problem come from?</h2><hr>
+        <p>
+            We can prove that the \(t\) statistics of a given coefficient can be write as follow:
+            $$t = \frac{\hat\beta_1 - 0}{\hat\sigma_{\hat\beta_1}} \approx cor(x_1,y) \times \sqrt{n-k}$$
+        </p>
+        <p>
+            If we set a Type I error threshold at 5%, it is (more or less) equivalent to rejecting the null hypothesis
+            that \(\beta = 0\) if \(t>1.96\). The equation above is fairly self-explanatory: whatever the level of correlation,
+            if our sample size is large enough, our test will tell us that the variable associated with \(\beta\) has a
+            significant correlation with the predicted variable. 
+        </p>
+        <p>
+            Another thing to keep in mind is that a sample size that is too small is also a problem, especially for the
+            error-following law. With frequentist statistics, the sample size really matters and has some important limitations.
+            Always remember that the effect size is not optional in statistics and that the p-value is not a complete result.
+            One could argue that a larger sample size decreases Type I and Type II errors, and increases the power of the statistic,
+            and this is true. The problem I am talking about is the fact that the effect size needed to detect an effect does
+            not have to be large to be significant. 
+        </p>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>How to prove this result?</h2><hr>
+        <p>
+            To prove it, we have to start from the sum of the squares of the residuals and, step by step, add the result
+            to another equation until we reach \(t\). This is not very complicated but it requires several steps.  
+
+            We assume the following:\
+            - \(y = x \beta + \varepsilon\)
+            - \(\tilde x_i = \bar x - x_i\)
+            - \(\beta = \frac{cov(x,y)}{Var(x)}\)
+        </p>
+        <h3>Step one</h3>
+        <p>
+            $$\sum r_i^2 = \sum (\tilde{y}_i - \tilde{x}_i \beta)^2$$
+            $$= \sum (\tilde{y}_i - \tilde{x}_i \frac{cov(x,y)}{Var(x)})^2$$
+            $$= \sum (\tilde{y}_i^2 - 2\tilde{y}_i \tilde{x}_i \frac{cov(x,y)}{Var(x)} + \tilde{x}_i^2\frac{cov^2(x,y)}{Var^2(x)})$$
+            $$= \sum \tilde{y}_i^2 - 2\sum \tilde{y}_i \tilde{x}_i \frac{cov(x,y)}{Var(x)} + \sum \tilde{x}_i^2\frac{cov^2(x,y)}{Var^2(x)}$$
+            $$= nVar(y) - 2n \frac{cov^2(x,y)}{Var(x)} + n\frac{cov^2(x,y)}{Var(x)}$$
+            $$= nVar(y) - n\frac{cov^2(x,y)}{Var(x)}$$
+            $$= nVar(y) (1 - cor^2(x,y))$$
+        </p>
+        <h3>Step two</h3>
+        <p>
+            $$Var(\varepsilon) = \sigma^2_{\varepsilon} = \frac{\sum r_i^2}{n-k}$$
+            $$= \frac{nVar(y) (1 - cor^2(x,y))}{n-k}$$
+        </p>
+        <h3>Step three</h3>
+        <p>
+            $$Var(\hat\beta) = \frac{\sigma^2_{\varepsilon}}{nVar(x)}$$
+            $$= \frac{nVar(y) (1 - cor^2(x,y))}{nVar(x)(n-k)}$$
+            $$\sqrt{Var(\hat\beta)} = \frac{\sigma(y)}{\sigma(x)} \times \frac{\sqrt{1 - cor^2(x,y)}}{\sqrt{n-k}}$$
+        </p>
+        <h3>Step four</h3>
+        <p>
+            $$t = \frac{\hat\beta }{\sigma(\hat\beta)} = \frac{\sigma(y)}{\sigma(x)} \times cor(x,y) \times \frac{\sigma(x)}{\sigma(y)} \times \frac{\sqrt{n-k}}{\sqrt{1 - cor^2(x,y)}}$$
+            $$= cor(x,y) \times \frac{\sqrt{n-k}}{\sqrt{1 - cor^2(x,y)}}$$
+
+            For a "low" level of correlation, we can rewrite: 
+            $$\approx cor(x,y) \times \sqrt{n-k}$$
+        </p>
+        <p>
+            The above assumption about the low level of correlation is not costly since we are talking specifically about the
+            low level of correlation. When the correlation is high, it is not a problem that our \(t\) is significant. It is
+            important to keep in mind that \(t\) is decreasing with \(k\), the number of explanatory variables, since \(n\) is most
+            of the time much larger than \(k\), it does not really matter here. I don't know if there is a similarity or a
+            difference when working on high dimensional data. I hope this post has helped to understand why higher is not always
+            better for the sample size. The main idea to remember is that there is a better range for the sample size that has
+            an upper bound. 
+        </p>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Numerical simulation</h2><hr>
+        <p>
+            For a better understanding, we can simulate the problem. We will simulate a linear regression with a low level
+            of correlation between the predictor and the predicted variable. We will then increase the sample size and see
+            how the p-value evolves.
+        </p>
+
+
+        <p>
+            Import a few libraries:
+            <div class="code-container">
+                <pre><code>
+import numpy as np
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+                </code></pre>
+            </div>
+        </p>
+        <p>
+            Then define 2 functions: one for pvalue and for the effect size (Cohen's d):
+            <div class="code-container">
+                <pre><code>
+def d_cohen(x, y):
+    cohen_d = (np.mean(x) - np.mean(y)) / np.sqrt((np.std(x) ** 2 + np.std(y) ** 2) / 2)
+    return cohen_d
+
+def linear_regression_pvalue(x, y):
+    X = sm.add_constant(x)
+    model = sm.OLS(y, X)
+    results = model.fit()
+    return results.pvalues[1]
+                </code></pre>
+            </div>
+        </p>
+        <p>
+            Plot the relation between x and y for a small sample size:
+            <div class="code-container">
+                <pre><code>
+np.random.seed(123)
+n = 100
+x = np.random.uniform(0, 10, n)
+y = 0.5*x + np.random.normal(0, 30, n)
+
+fig, ax = plt.subplots()
+ax.scatter(x, y)
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_title('Relationship between x and y')
+plt.show()
+                </code></pre>
+            </div>
+            <img src="../../img/graph/x_vs_y.png" alt="x_vs_y" width="100%">
+        </p>
+        <p>
+            Now let's see how pvalues and effect size evolve with the sample size:
+            <div class="code-container">
+                <pre><code>
+np.random.seed(123)
+pvalues = []
+d_cohen_values = []
+start = 100
+stop = 20000
+for n in range(start, stop, 100):
+    x = np.random.uniform(0, 10, n)
+    y = 0.5*x + np.random.normal(0, 30, n)
+    pvalues.append(linear_regression_pvalue(x, y))
+    d_cohen_values.append(d_cohen(x, y))
+
+fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(12, 5))
+ax[0].plot(range(start, stop, 100), d_cohen_values)
+ax[0].set_xlabel('sample size')
+ax[0].set_ylabel('Effect size')
+ax[0].set_title('Effect size of difference in means')
+ax[1].plot(range(start, stop, 100), pvalues)
+ax[1].set_xlabel('sample size')
+ax[1].set_ylabel('p-value')
+ax[1].set_title('P-value of slope coefficient')
+plt.show()
+                </code></pre>
+            </div>
+                <img src="../../img/graph/linear_regression_pvalue.png" alt="pvalue_vs_sample_size" width="100%"
+        </p>
+        <p>
+            As you can see, the p-value decreases really fast with the sample size. It is already below 0.05 for
+            a sample around 2500, even tough the effect size is really small and looks inexistent in the first chart
+            from above. Also, the effect size, measured by Cohen's d, converge to its "real" value with the sample
+            size.
+        </p>
+        <p>
+            The main point of these charts is to show you that p-value is clearly not an exhaustive measure of the
+            relation between two variables. It is only a measure of the statistical significance of the relation.
+        </p>
+
+        <br>
+        <br>
+        <br>
+
+        <h2>Going further</h2><hr>
+        <p>
+            In this post, we saw <i>[insert here a brief recap]</i>
+        </p>
+        <p>
+            If you want to go further, check:
+            <ul>
+                <li><a href="/articles/missing-values-solutions.html">Dealing with missing values: beyond the mean and the mode</a></li>
+                <li><a href="/articles/all-other-things-being-equal.html">All other things being equal: what does this really mean?</a></li>
+            </ul>
+        </p>
+        <p>
+            This post is the work of <a href='/about.html'>Joseph Barbier and Thomas Salanova</a>. If you have
+            any questions, feel free to <a href='mailto:joseph.barbierdarnal@gmail.com' target="_blank">contact us</a>!
+        </p>
+
+        
+        
+    </div> <!-- end container -->
+<div id="footer-container"></div>
+
+<script src="/script/button-switch-language.js"></script>
+<script src="/script/load-header-footer.js"></script>
+
+</body>
+</html>

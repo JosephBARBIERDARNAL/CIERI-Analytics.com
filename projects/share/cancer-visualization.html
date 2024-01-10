@@ -132,6 +132,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 <span class="c1"># viz</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objects</span> <span class="k">as</span> <span class="nn">go</span>
+<span class="kn">from</span> <span class="nn">plotly.offline</span> <span class="kn">import</span> <span class="n">plot</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="k">as</span> <span class="nn">cm</span>
 <span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">mcolors</span>
@@ -146,6 +148,144 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
 <span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPClassifier</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">precision_score</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<br/><h2 id="Open-and-clean-dataset-functions">Open and clean dataset functions</h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">cols</span><span class="p">):</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    
+    <span class="c1"># get all distinct 2 first letters of columns</span>
+    <span class="n">cols_tag</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">cols_tag</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'../../../SHARE/data/sharew</span><span class="si">{</span><span class="n">wave</span><span class="si">}</span><span class="s1">_rel8-0-0_ALL_datasets_stata/sharew</span><span class="si">{</span><span class="n">wave</span><span class="si">}</span><span class="s1">_rel8-0-0_</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">.dta'</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_stata</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">data</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># keep only columns of interest</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span>
+
+    <span class="c1"># drop dupplicate columns</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+<span class="k">def</span> <span class="nf">id_to_name</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'language'</span><span class="p">:</span> <span class="s1">'Language'</span><span class="p">,</span>
+        <span class="s1">'br003_'</span><span class="p">:</span> <span class="s1">'YearCigarette'</span><span class="p">,</span>
+        <span class="s1">'country'</span><span class="p">:</span> <span class="s1">'Country'</span><span class="p">,</span>
+        <span class="s1">'dn014_'</span><span class="p">:</span> <span class="s1">'MaritalStatus'</span><span class="p">,</span>
+        <span class="s1">'dn042_'</span><span class="p">:</span> <span class="s1">'Gender'</span><span class="p">,</span>
+        <span class="s1">'dn003_'</span><span class="p">:</span> <span class="s1">'YearOfBirth'</span><span class="p">,</span>
+        <span class="s1">'br001_'</span><span class="p">:</span> <span class="s1">'Smoking'</span><span class="p">,</span>
+        <span class="s1">'br015_'</span><span class="p">:</span> <span class="s1">'SportFrequencyVigorous'</span><span class="p">,</span>
+        <span class="s1">'br016_'</span><span class="p">:</span> <span class="s1">'SportFrequencyModerate'</span><span class="p">,</span>
+        <span class="s1">'br039_'</span><span class="p">:</span> <span class="s1">'Alcool'</span><span class="p">,</span>
+        <span class="s1">'ph003_'</span><span class="p">:</span> <span class="s1">'HealthSelfPerception'</span><span class="p">,</span>
+        <span class="s1">'ph084_'</span><span class="p">:</span> <span class="s1">'Pain'</span><span class="p">,</span>
+        <span class="s1">'ph006d10'</span><span class="p">:</span> <span class="s1">'Cancer'</span><span class="p">,</span>
+        <span class="s1">'ph012_'</span><span class="p">:</span> <span class="s1">'Weight'</span><span class="p">,</span>
+        <span class="s1">'ph013_'</span><span class="p">:</span> <span class="s1">'Height'</span><span class="p">,</span>
+        <span class="s1">'ph041_'</span><span class="p">:</span> <span class="s1">'Glasses'</span><span class="p">,</span>
+        <span class="s1">'ph745_'</span><span class="p">:</span> <span class="s1">'HearingAid'</span><span class="p">,</span>
+        <span class="s1">'mh002_'</span><span class="p">:</span> <span class="s1">'Depression'</span><span class="p">,</span>
+        <span class="s1">'mh003_'</span><span class="p">:</span> <span class="s1">'Hopelessness'</span><span class="p">,</span>
+        <span class="s1">'mh004_'</span><span class="p">:</span> <span class="s1">'WishDeath'</span><span class="p">,</span>
+        <span class="s1">'mh005_'</span><span class="p">:</span> <span class="s1">'Guilt'</span><span class="p">,</span>
+        <span class="s1">'mh007_'</span><span class="p">:</span> <span class="s1">'SleepTrouble'</span><span class="p">,</span>
+        <span class="s1">'mh008_'</span><span class="p">:</span> <span class="s1">'Interest'</span><span class="p">,</span>
+        <span class="s1">'mh010_'</span><span class="p">:</span> <span class="s1">'Irritable'</span><span class="p">,</span>
+        <span class="s1">'mh011_'</span><span class="p">:</span> <span class="s1">'Appetite'</span><span class="p">,</span>
+        <span class="s1">'mh013_'</span><span class="p">:</span> <span class="s1">'Fatigue'</span><span class="p">,</span>
+        <span class="s1">'mh015_'</span><span class="p">:</span> <span class="s1">'ConcentrationReading'</span><span class="p">,</span>
+        <span class="s1">'mh016_'</span><span class="p">:</span> <span class="s1">'Enjoyment'</span><span class="p">,</span>
+        <span class="s1">'mh017_'</span><span class="p">:</span> <span class="s1">'Tears'</span><span class="p">,</span>
+        <span class="s1">'hc602_'</span><span class="p">:</span> <span class="s1">'MedVisit'</span><span class="p">,</span>
+        <span class="p">}</span>
+    
+    <span class="n">column_types</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'YearOfBirth'</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span>
+        <span class="s1">'MaritalStatus'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Gender'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Smoking'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'SportFrequencyVigorous'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'SportFrequencyModerate'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'HealthSelfPerception'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Pain'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Cancer'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Weight'</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span>
+        <span class="s1">'Height'</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span>
+        <span class="s1">'Glasses'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'HearingAid'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Depression'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Hopelessness'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'WishDeath'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Guilt'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'SleepTrouble'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Interest'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Irritable'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Appetite'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Fatigue'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'ConcentrationReading'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Enjoyment'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'Tears'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+        <span class="s1">'YearOfBirth'</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span>
+        <span class="s1">'MedVisit'</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="n">columns</span><span class="p">[</span><span class="n">col</span><span class="p">]},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">column_types</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">column_types</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+
+<span class="k">def</span> <span class="nf">deal_nan</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+    <span class="n">values_to_replace</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Don't know"</span><span class="p">,</span> <span class="s2">"Refusal"</span><span class="p">,</span>
+                     <span class="s2">"Implausible value/suspected wrong"</span><span class="p">,</span> 
+                     <span class="s2">"Not codable"</span><span class="p">,</span> <span class="s2">"Not answered"</span><span class="p">,</span>
+                     <span class="s2">"Not yet coded"</span><span class="p">,</span> <span class="s2">"Not applicable"</span><span class="p">]</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">values_to_replace</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'NaN'</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">'Cancer'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">'YearOfBirth'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'YearOfBirth'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">wave_to_year</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="mi">2004</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">:</span> <span class="mi">2006</span><span class="p">,</span>
+            <span class="mi">3</span><span class="p">:</span> <span class="mi">2008</span><span class="p">,</span>
+            <span class="mi">4</span><span class="p">:</span> <span class="mi">2011</span><span class="p">,</span>
+            <span class="mi">5</span><span class="p">:</span> <span class="mi">2013</span><span class="p">,</span>
+            <span class="mi">6</span><span class="p">:</span> <span class="mi">2015</span><span class="p">,</span>
+            <span class="mi">7</span><span class="p">:</span> <span class="mi">2017</span><span class="p">,</span>
+            <span class="mi">8</span><span class="p">:</span> <span class="mi">2019</span>
+        <span class="p">}</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">wave_to_year</span><span class="p">[</span><span class="n">wave</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">"Age"</span><span class="p">]</span> <span class="o">=</span> <span class="n">year</span> <span class="o">-</span> <span class="n">df</span><span class="p">[</span><span class="s2">"YearOfBirth"</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">Age</span> <span class="o">&gt;=</span> <span class="mi">50</span><span class="p">,]</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">'Cancer'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">'Cancer'</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">({</span><span class="s1">'Selected'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'Not selected'</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">'Cancer'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s1">'Cancer'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
 </pre></div>
 </div>
 </div>
@@ -503,6 +643,313 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<br/><h2 id="Depression-and-Cancer-heatmap">Depression and Cancer heatmap</h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><div class="highlight"><pre><span></span><span class="n">df_test</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+
+<span class="n">contingency_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">'Cancer'</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="s1">'Depression'</span><span class="p">])</span>
+<span class="n">total</span> <span class="o">=</span> <span class="n">contingency_table</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">contingency_table_percentage</span> <span class="o">=</span> <span class="p">(</span><span class="n">contingency_table</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+
+<span class="n">chi2</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">dof</span><span class="p">,</span> <span class="n">expected</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">contingency_table</span><span class="p">)</span>
+<span class="n">expected_percentage</span> <span class="o">=</span> <span class="p">(</span><span class="n">expected</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Chi-squared Test"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"p-value:"</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Expected frequencies:</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">expected_percentage</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">contingency_table_percentage</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'Reds'</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">'.2f'</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Depression and Cancer (in %)'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'Cancer'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">'Depression'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<div class="highlight"><pre><span></span><span class="n">Chi</span><span class="o">-</span><span class="n">squared</span> <span class="n">Test</span>
+<span class="n">p</span><span class="o">-</span><span class="n">value</span><span class="p">:</span> <span class="mf">5.110139702072264e-32</span>
+<span class="n">Expected</span> <span class="n">frequencies</span><span class="p">:</span>
+ <span class="p">[[</span><span class="mf">56.87913679</span> <span class="mf">37.86394622</span><span class="p">]</span>
+ <span class="p">[</span> <span class="mf">3.15599716</span>  <span class="mf">2.10091984</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+<div class="jp-OutputArea-child">
+
+<div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
+<img alt="No description has been provided for this image" class="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAIjCAYAAACTRapjAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjguMiwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy8g+/7EAAAACXBIWXMAAA9hAAAPYQGoP6dpAABUAUlEQVR4nO3deVxV1frH8e8BmRRBIQFHHHDAnK0MTS1FMbM0KdO816E0K62MrKRUnJImNWcty6m6XlOzrOt0NYfMzCHHHNBwVhxIFAdk2L8//HluJ1CBOGxkf973tV8vz9rrrP3sE1wfn7X2OjbDMAwBAADAMlzMDgAAAAD5iwQQAADAYkgAAQAALIYEEAAAwGJIAAEAACyGBBAAAMBiSAABAAAshgQQAADAYkgAAQAALIYEECikhg4dKpvNZnYYTmWFe8wrR48elaenp9avX29v69GjhypWrGheUH/RuXNnderUyewwAEsgAUShMXPmTNlsNvvh6empMmXKKCIiQuPHj9fFixfNDhEmW716tTp27KigoCC5u7srICBAjz76qBYuXGh2aE43fPhwNWrUSE2aNHHaNc6fP6+uXbuqZMmSqly5sj799NNMfTZv3qyiRYsqPj4+07k333xTCxYs0Pbt250WI4DrSABR6AwfPlxz5szRlClT9NJLL0mS+vfvr9q1a2vHjh0mR5d/Bg0apCtXrpgdRoERExOjhx56SLt27VKfPn00depUvf7660pOTlZkZKS+/PJLs0N0mjNnzmjWrFl6/vnnHdo/+eQT7du3L8+uM2DAAK1evVrDhg1Tu3bt1Lt3b/3000/284Zh6OWXX1b//v1VqVKlTO+vX7++7rnnHo0ePTrPYgJwEwZQSMyYMcOQZGzatCnTuZUrVxpeXl5GcHCwcfny5XyNKyMjI9+vaRUxMTFGdv5v7KuvvjIkGU888YRx7dq1TOeXLl1qLF682Bkh5osrV64Y6enpNz0/ZswYw8vLy7h48aJT4wgMDDRmzZplf928eXNj4MCB9tdz5swxypQpc8s4PvzwQ6NYsWJOjxWwOiqAsIQWLVpo8ODBOnz4sD7//HOHc3v37tUTTzwhPz8/eXp66p577tG3337r0OfG9PLatWvVp08f+fv7y8fHR926ddMff/zh0LdixYpq166dli1bpnvuuUdeXl6aNm2apOtTZP3791f58uXl4eGhkJAQvffee8rIyHAYY+7cuWrYsKGKFy8uHx8f1a5dW+PGjbOfT01N1bBhw1S1alV5enrK399fDzzwgFasWGHvk9X6uLS0NI0YMUJVqlSRh4eHKlasqLfeekspKSlZ3sOPP/6o++67T56enqpcubJmz56drc/7ww8/VOPGjeXv7y8vLy81bNhQ8+fPz9TPZrOpX79+WrRokWrVqiUPDw/dfffdWrp0aaa+P/74o+699155enqqSpUq9s80OwYPHiw/Pz999tlncnNzy3Q+IiJC7dq1kyRdu3ZNQ4YMUcOGDeXr66tixYqpadOm+uGHHxzec+jQIdlsNn344Yf6+OOP7Z/pvffeq02bNmW6xt69e9WpUyeVKlVKXl5eql69ut5++22HPsePH9czzzyjwMBA+2fx2WefOfRZvXq1bDab5s6dq0GDBqls2bIqWrSoLly4cNP7X7RokRo1aiRvb2+H9r+uAczpPf3VlStXVLJkSftrPz8/Xb58WZJ06dIlDRw4ULGxsZni+LNWrVrp0qVLDj/LAJzA7AwUyCu3qgAahmEcPXrUXgW6YdeuXYavr69Rs2ZN47333jMmTpxoNGvWzLDZbMbChQszjV27dm2jadOmxvjx442+ffsaLi4uRrNmzYyMjAx73+DgYCMkJMQoWbKkMXDgQGPq1KnGDz/8YFy6dMmoU6eO4e/vb7z11lvG1KlTjW7duhk2m8145ZVX7O9fvny5Iclo2bKlMWnSJGPSpElGv379jCeffNLe56233jJsNpvRu3dv45NPPjFGjx5tdOnSxXj33XftfbKqjnXv3t3+GUyaNMno1q2bIcno0KGDQ7/g4GCjevXqRmBgoPHWW28ZEydONBo0aGDYbDZj165dt/1vUa5cOePFF180Jk6caIwZM8a47777DEnGd99959BPklG3bl2jdOnSxogRI4yPPvrIqFy5slG0aFHj7Nmz9n47duwwvLy8jAoVKhixsbHGiBEjjMDAQKNOnTq3rQDu37/fkGQ888wzt43bMAzjzJkzRunSpY2oqChjypQpxvvvv29Ur17dcHNzM3799Vd7v/j4eEOSUb9+fSMkJMR47733jPfff9+46667jHLlyjlUGrdv3274+PgY/v7+RnR0tDFt2jTjjTfeMGrXrm3vc+rUKaNcuXJG+fLljeHDhxtTpkwxHnvsMUOSMXbs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Wlqajh49qsceeyxfYwWshjWAsIRVq1ZpxIgRqlSpkrp27SrpeqXtwQcf1LRp03Ty5MlM7zlz5kymto8//thhSnDKlClKS0vTww8/fNsYOnXqpA0bNmjZsmWZzp0/f15paWmS/rdm6wYXFxd79efGdOpf+3h7eyskJCTTdi5/diNJ/eijjxzax4wZI0l65JFHbnsP2eHq6iqbzab09HR726FDh7Ro0aJcjxcREaFFixbpyJEj9vY9e/Zk+VlmZdiwYTp37px69epl/5z/bPny5fruu+/s15Mcq10bN27Uhg0bchV/qVKl1KxZM3322WcO8f/5Gq6uroqMjNSCBQuyTBSz+lnMLjc3N91zzz3avHlzrsfIjcTERMXExOiDDz6Qp6enJCkwMFB79+6199mzZ4+CgoIc3vfbb7/p6tWraty4cb7GC1gNFUAUOkuWLNHevXuVlpamhIQErVq1SitWrFBwcLC+/fZb+19GkjRp0iQ98MADql27tnr37q3KlSsrISFBGzZs0LFjxzJ9JdW1a9fUsmVLderUSfv27dPkyZP1wAMPZKta8frrr+vbb79Vu3bt1KNHDzVs2FCXLl3Szp07NX/+fB06dEh33XWXevXqpcTERLVo0ULlypXT4cOHNWHCBNWrV89euatZs6YefPBBNWzYUH5+ftq8ebPmz5+vfv363fT6devWVffu3fXxxx/r/Pnzat68uX755RfNmjVLHTp0cKhs/h2PPPKIxowZozZt2ujpp5/W6dOnNWnSJIWEhOT6m1iGDRumpUuXqmnTpnrxxReVlpamCRMm6O67787WmE899ZR27typd955R7/++qu6dOmi4OBgnTt3TkuXLtXKlSvt09Pt2rXTwoUL9fjjj+uRRx5RfHy8pk6dqpo1ayo5OTlX8Y8fP14PPPCAGjRooOeee06VKlXSoUOH9P3332vbtm2SpHfffVc//PCDGjVqpN69e6tmzZpKTEzU1q1b9d///leJiYm5urYktW/fXm+//bYuXLhgXxPpbIMHD1bt2rX15JNP2tsiIyM1fPhwvfDCCwoODta0adPs/wC5YcWKFSpatKhatWqVL3EClmXOw8dA3ruxVcuNw93d3QgKCjJatWpljBs3zrhw4UKW7zt48KDRrVs3IygoyHBzczPKli1rtGvXzpg/f36msdesWWM899xzRsmSJQ1vb2+ja9euxrlz5xzGCw4OvukWLRcvXjSio6ONkJAQw93d3bjrrruMxo0bGx9++KF9e5n58+cbrVu3NgICAgx3d3ejQoUKRp8+fYyTJ0/axxk5cqRx3333GSVKlDC8vLyMGjVqGO+8847DFjVZ7QOYmppqDBs2zKhUqZLh5uZmlC9f3oiOjnbYBudW99C8eXOjefPmWd7bn3366adG1apVDQ8PD6NGjRrGjBkzsoxHktG3b99M7w8ODja6d+/u0LZmzRqjYcOGhru7u1G5cmVj6tSp2f4mkBtWrlxptG/f3ggICDCKFClilCpVynj00UcdtvHJyMgwRo0aZQQHBxseHh5G/fr1je++++6mW6Z88MEHma4jyYiJiXFo27Vrl/H4448bJUqUMDw9PY3q1asbgwcPduiTkJBg9O3b1yhfvrzh5uZmBAUFGS1btjQ+/vhje58b28B89dVX2b7vhIQEo0iRIsacOXMc2v/uPd3Mjh07DHd3d4d9E2+YOXOmUbFiRcPf39+IiorKtN1Ro0aNjH/84x/Zug6A3LMZRh6ttAYKsZkzZ6pnz57atGmTwxOOwJ3i2Wef1f79+7Vu3TqzQ7mpbdu2qUGDBtq6davq1atndjhAocYaQACwgJiYGG3atEnr1683O5Sbevfdd/XEE0+Q/AH5gDWAAGABFSpU0NWrV80O45bmzp1rdgiAZVABBAAAsBjWAAIAAFgMFUAAAACLIQEEAACwGBJAAAAAiymUTwE/b8ufne4B5L9RYRXMDgGAk/j9dPPvzHY2Z+YOU40LThs7t6gAAgAAWEyhrAACAADkhNUqYiSAAADA8lxsNrNDyFdWS3gBAAAsjwogAACwPKtVxKx2vwAAAJZHBRAAAFiei7WWAFIBBAAAsBoqgAAAwPKsVhGz2v0CAABYHhVAAABgeVbbB5AEEAAAWJ7VpkStdr8AAACWRwUQAABYHtvAAAAAoFCjAggAACzPahUxq90vAACA5VEBBAAAlmez2DYwVAABAAAshgogAACwPKtVxEgAAQCA5bENDAAAAAo1KoAAAMDyrFYRs9r9AgAAWB4VQAAAYHkubAMDAACAwowKIAAAsDyrVcSsdr8AAACWRwUQAABYntX2ASQBBAAAlme1KVGr3S8AAIDlUQEEAACW5yJrzQFTAQQAALAYKoAAAMDyrPYQCBVAAAAAi6ECCAAALM9qFTGr3S8AAIDlUQEEAACWZ7U1gCSAAADA8tgGBgAAAIUaFUAAAGB5VpsCpgIIAABgMVQAAQCA5VmtIma1+wUAALA8KoAAAMDyWAMIAACAQo0KIAAAsDyr7QNIAggAACyPKWAAAAAUalQAAQCA5VmsAEgFEAAAwGqoAAIAAMtjDSAAAAAKNSqAAADA8qy2DQwVQAAAAIuhAggAACzPamsASQABAIDlWW1K1Gr3CwAAYHkkgAAAwPJsTjxyYujQobLZbA5HjRo17OevXr2qvn37yt/fX97e3oqMjFRCQkKO75cEEAAAoAC5++67dfLkSfvx448/2s+9+uqrWrx4sb766iutWbNGJ06cUMeOHXN8DdYAAgAAy3OxFZynQIoUKaKgoKBM7UlJSfr000/15ZdfqkWLFpKkGTNmKDQ0VD///LPuv//+bF+DCiAAAIATpaSk6MKFCw5HSkrKTfvHxcWpTJkyqly5srp27aojR45IkrZs2aLU1FSFh4fb+9aoUUMVKlTQhg0bchQTCSAAALA8Z64BjI2Nla+vr8MRGxubZRyNGjXSzJkztXTpUk2ZMkXx8fFq2rSpLl68qFOnTsnd3V0lSpRweE9gYKBOnTqVo/tlChgAAMCJoqOjFRUV5dDm4eGRZd+HH37Y/uc6deqoUaNGCg4O1rx58+Tl5ZVnMZEAAgAAy3PmCkAPD4+bJny3U6JECVWrVk0HDhxQq1atdO3aNZ0/f96hCpiQkJDlmsFbYQoYAABYXkHZBuavkpOTdfDgQZUuXVoNGzaUm5ubVq5caT+/b98+HTlyRGFhYTkalwogAABAATFgwAA9+uijCg4O1okTJxQTEyNXV1d16dJFvr6+evbZZxUVFSU/Pz/5+PjopZdeUlhYWI6eAJZIAAEAAGQrINvAHDt2TF26dNG5c+dUqlQpPfDAA/r5559VqlQpSdLYsWPl4uKiyMhIpaSkKCIiQpMnT87xdWyGYRh5HbzZnrf5mB0CACcZFVbB7BAAOInfT7tMu/YCv5ytocuJyMScPaGbH6gAAgAAyysY9b/8w0MgAAAAFkMFEAAAWJ7VKmJWu18AAADLM6UCWLJkyWw/bZOYmOjkaAAAgNUVkIeA840pCeBHH31k//O5c+c0cuRIRURE2Dcx3LBhg5YtW6bBgwebER4AAEChZvo2MJGRkXrooYfUr18/h/aJEyfqv//9rxYtWpTjMdkGBii82AYGKLzM3AbmW//SThv7sXMnnTZ2bpm+BnDZsmVq06ZNpvY2bdrov//9rwkRAQAAqymoXwXnLKYngP7+/vrmm28ytX/zzTfy9/c3ISIAAIDCzfRtYIYNG6ZevXpp9erVatSokSRp48aNWrp0qT755BOTowMAAFZQUCt1zmJ6AtijRw+FhoZq/PjxWrhwoSQpNDRUP/74oz0hBAAAQN4xPQGUpEaNGumLL74wOwwAAGBRLhYrAZq+BlCSDh48qEGDBunpp5/W6dOnJUlLlizR7t27TY4MAACg8DE9AVyzZo1q166tjRs3asGCBUpOTpYkbd++XTExMSZHBwAArMDmxP8VRKYngAMHDtTIkSO1YsUKubu729tbtGihn3/+2cTIAAAACifTE8CdO3fq8ccfz9QeEBCgs2fPmhARAACwGvYBzGclSpTQyZOZd8j+9ddfVbZsWRMiAgAAVmOzOe8oiExPADt37qw333xTp06dks1mU0ZGhtavX68BAwaoW7duZocHAABQ6JieAI4aNUo1atRQ+fLllZycrJo1a6pZs2Zq3LixBg0aZHZ4AADAAqw2BWz6PoDu7u765JNPNGTIEO3cuVPJycmqX7++qlatanZoAAAAhZLpFcDhw4fr8uXLKl++vNq2batOnTqpatWqunLlioYPH252eAAAwAJcZHPaURCZngAOGzbMvvffn12+fFnDhg0zISIAAIDCzfQpYMMwZMviEZnt27fLz8/PhIgAAIDVFMw6nfOYlgCWLFlSNptNNptN1apVc0gC09PTlZycrOeff96s8AAAAAot0xLAjz76SIZh6JlnntGwYcPk6+trP+fu7q6KFSsqLCzMrPAAAICFFNT9+pzFtASwe/fukqRKlSqpSZMmKlLE9NloAABgURbL/8x/COTSpUtauXJlpvZly5ZpyZIlJkQEAABQuJmeAA4cOFDp6emZ2g3D0MCBA02ICAAAWI3Nif8riExPAOPi4lSzZs1M7TVq1NCBAwdMiAgAAKBwMz0B9PX11e+//56p/cCBAypWrJgJEQEAAKtxsTnvKIhMTwDbt2+v/v376+DBg/a2AwcO6LXXXtNjjz1mYmQAAACFk+kJ4Pvvv69ixYqpRo0aqlSpkipVqqTQ0FD5+/vrww8/NDs8AABgATYnHgWR6Xuv+Pr66qefftKKFSu0fft2eXl5qU6dOmrWrJnZoQEAABRKpieAkmSz2dS6dWs1a9ZMHh4eWX41HAAAgLNYLfMwfQo4IyNDI0aMUNmyZeXt7a34+HhJ0uDBg/Xpp5+aHB0AALACtoHJZyNHjtTMmTP1/vvvy93d3d5eq1YtTZ8+3cTIAAAACifTE8DZs2fr448/VteuXeXq6mpvr1u3rvbu3WtiZAAAwCpsNucdBZHpCeDx48cVEhKSqT0jI0OpqakmRAQAAFC4mZ4A1qxZU+vWrcvUPn/+fNWvX9+EiAAAgNW4OPEoiEx/CnjIkCHq3r27jh8/royMDC1cuFD79u3T7Nmz9d1335kdHgAAQKFjegLYvn17LV68WMOHD1exYsU0ZMgQNWjQQIsXL1arVq3MDg9O1C4mWu2GRju0ndq7X0ND75F/cAW9c2hXlu/7+Mlu2jp/0W3Hf3rKWDV7/lnN6z9Qq8ZNtrcHVA1R5AcjVKXJ/XJ1d9PxHbv17eCR2r86cyUaQO54PP6UPB5/Sq6ly0iS0uMP6MpnU5X6849yCSqjEguXZ/m+i29HKfWHLM65FpFXn5fkFtZUrmXKyUhOVurmn3V5ylgZZ884dHVr3ExePZ+Xa0g1GSkpStu2WckDX8nze0ThUkCX6jmN6QmgJDVt2lQrVqwwOwyY4Piu3zQu/H9f+ZeeliZJSjx6TG8EOa4NfeC5nmr9+svaveT2Pyv1OrRTpfvv1fnjJzKd6/vdPJ2OO6ixLdop9cpVtej/ovp+N0+Dq9TVhYTTf/OOAEhSxulTujJlrNKPHpZsNnm0bS/v9yboQo8nlH44Xn+0a+7Q36P9k/J6uqdSf876H2I2T08VqVZTV2dMU9qBfbIV91Gx/gNV/L2JuvDsU/Z+bg+Gq9jAYboydZxSt2yUXF1VpHJVp94rcCcqEAkgrCsjLS3LpMvIyMjUXu/xdtoy72ulXLp0yzFLlCmtpyZ8oPERj6vf9185nCvm76fAaiGa82xfHd+5W5L09cAYPdi3t8rUqkkCCOSR1PVrHF5fmTb+ekXw7rpKjz8oI/Gcw3n35i11bdUy6cqVLMczLiXrYv/eDm2XxoyS76dz5RIYpIyEU5Krq4r1H6jLE0fr2ncL7f2uHfo9j+4KhZnVvoTClASwZMmS2f6gExMTnRwNzBRQtYrePb5PqVevKn7DJn0dPVR/HD2WqV+FBvVUoX5dze372i3Hs9ls6jHnY634YLxO/pZ5G6FL5xJ1au9+3d+ti45s3a60lBQ169NTFxJO68iWbXl1WwD+zMVF7i0iZPP0UtqubZlOu1avqSLVQnX5w3dyNKytmLeMjAxlXLx4fZxqoXIJCJKMDPnM/EoufncpLW6vrkwarfTfD+TFnaAQs1b6Z1IC+NFHH+XZWCkpKUpJSXFoS5chV8v9p7zzxG/crFk9XlDCvjj5lg7SIzEDNWDdUg2vdb9SkpMd+jZ5tptO/rZXv2/45ZZjtn7zVWWkpWvV+Ck37fNR+GN6YdGX+ujiCRkZGbp4+owmtOmoy+fP58VtAfh/rpWryufjLyR3dxlXLis5+hVlZFGN83i0o9LjD2aZHN6Uu7uKvviqrq34j3T5+qyAa9nykiSvZ1/U5fHvK+PkCXl26a7iE2co6alHZFy8kBe3BRQKpiSA3bt3z7OxYmNjNWzYMIe2hnLXPfLIs2vAOXYv/d9avuM7dyt+42aNOrxLDTs9rp8+m2M/5+bpqXuffkL/GfH+Lcer0KCeWrzygkY1aHrLfl0mjdbF02c1ummErl25qgd6ddeLi/+t2Hsf1IVTCX/vpgDYpR+JV1L3SNm8i8v9odYqNugdXejbwzEJdPeQe6u2ujpzWvYHdi0i7xGjJZtNlz4Y8b/2/59ZujrrY6Wu/q8k6dI7g1Ri0Uq5t4hQyjdfZTUaIMl6FcACsT3NwYMHNWjQIHXp0kWnT19fg7VkyRLt3r37tu+Njo5WUlKSw1Ff7rd9HwqeK0lJSth/UAEhlR3aGzzRQe5Fi+rn2f+65ftDmjZW8YBSGnXkN01KTdSk1ET5VwzWE6Pf0TvxOyVJ1Vs0V+12bTS9c08d/Gmjjv66Xf/qG6XUK1cV1v1pp90bYElpaco4flTp+37TlakfKf3APnl2+odDF/cWrWXz9FLKkm+zN6ZrEXmPHC2XoDK6+Epve/VPkjLOXX8aOD3+4P/6p6Yq48QxuQSV/tu3AxQmpieAa9asUe3atbVx40YtXLhQyf8/9bd9+3bFxMTc9v0eHh7y8fFxOJj+vTN5FCumUlUqKemkYxWuybP/1I5v/6Pks+du8s7rNs6Zq5F1wvROvSb24/zxE1r+wTiNj3hckuRe1EvS9YdM/iwjI0M2F9N/HYDCzcVFNjfHf6B7tOuo1B9/kHH+j9u//0byV76CLr7SS8aFJIfTaXt/k5GSIpcKlRze41K6rDJOZd4RAPgzm83mtKMgMv1vvIEDB2rkyJFasWKF3N3/938MLVq00M8//2xiZHC2yA9GqmqzJvIPrqDKYffp+a+/UEZ6ujb963/TNKWqVFZIsyb6cfrsLMcYumez6nVoJ0m6lJioE7v3OBzpqam6cOq0EvZfXwD++4ZfdPmP8+o+a6rK1qmlgKoh6vj+CN1VKVg7v1/m/JsGLMLr+f4qUq+hXILKyLVy1euv69+rlOXf2/u4lC2vIvUaKuXbBVmO4fuvb+XWrOX1F65F5D1qjFxr3K1LQwdeTyb9/GXz85eK/P9qpsuXlLJonor2elFF7msslwoVVfT1wZKka6uy3ncQsCrTt4HZuXOnvvzyy0ztAQEBOnv2rAkRIb+UKFdWz/7rMxXz91PymbM68OPPeu/+lg6VvsbP/EPnjx3XnuUrsxwjqEY1efn6ZPual84lanybjmr/zhC9uuo7uboV0cndezWlfRcd35H1xtMAcs6lpJ+KDR4lF/9SMi5dVPqB/br4ah+lbdpg7+PRrqMyTico9ZefshzDNbiybN7e18crFSD3pi0kSb6zHRPGC317Ku3XTZKkyxNHy0hPl/eQWNk8PJS2e6cuvvQMD4DgtlwKZqHOaWyGYRhmBlCuXDnNmzdPjRs3VvHixbV9+3ZVrlxZX3/9tQYMGKCDBw/efpC/eN6W/YQAwJ1lVFgFs0MA4CR+P5n3D/FfywY7bez6xw87bezcMn0KuHPnznrzzTd16tQp2Ww2ZWRkaP369RowYIC6detmdngAAMACbC42px0FkekJ4KhRo1SjRg2VL19eycnJqlmzppo1a6bGjRtr0KBBZocHAAAswGZz3lEQmb4G0N3dXZ988omGDBminTt3Kjk5WfXr11fVqnx3IwAAgDOYngDeUL58eZUvX17p6enauXOn/vjjD5UsWdLssAAAgAUU1Eqds5g+Bdy/f399+umnkqT09HQ1b95cDRo0UPny5bV69WpzgwMAACiETE8A58+fr7p160qSFi9erN9//1179+7Vq6++qrffftvk6AAAgBWwEXQ+O3v2rIKCgiRJ//nPf9SpUydVq1ZNzzzzjHbu3GlydAAAAIWP6QlgYGCgfvvtN6Wnp2vp0qVq1aqVJOny5ctydXU1OToAAGAFPAWcz3r27KlOnTqpdOnSstlsCg8PlyRt3LhRNWrUMDk6AACAwsf0BHDo0KGqVauWjh49qieffFIeHh6SJFdXVw0cONDk6AAAgBUU1LV6zmJ6AihJTzzxRKa27t27mxAJAACwIovlf+avAQQAAED+KhAVQAAAADO5WKwESAUQAADAYqgAAgAAy7NYAdD8CqCrq6tOnz6dqf3cuXPsAwgAAOAEplcADcPIsj0lJUXu7u75HA0AALAitoHJJ+PHj5d0/QOfPn26vL297efS09O1du1aNoIGAABwAtMSwLFjx0q6XgGcOnWqw3Svu7u7KlasqKlTp5oVHgAAsBCb6Yvi8pdpCWB8fLwk6aGHHtLChQtVsmRJs0IBAAAWxxRwPvvhhx/sf76xHtBq/xEAAADyU4EoeM6ePVu1a9eWl5eXvLy8VKdOHc2ZM8fssAAAgEXYbM47CiLTE8AxY8bohRdeUNu2bTVv3jzNmzdPbdq00fPPP29fJwgAAGBF7777rmw2m/r3729vu3r1qvr27St/f395e3srMjJSCQkJORrX9CngCRMmaMqUKerWrZu97bHHHtPdd9+toUOH6tVXXzUxOgAAYAUFcfnZpk2bNG3aNNWpU8eh/dVXX9X333+vr776Sr6+vurXr586duyo9evXZ3ts0yuAJ0+eVOPGjTO1N27cWCdPnjQhIgAAAHMlJyera9eu+uSTTxwelE1KStKnn36qMWPGqEWLFmrYsKFmzJihn376ST///HO2xzc9AQwJCdG8efMytf/73/9W1apVTYgIAABYjTPXAKakpOjChQsOR0pKyi3j6du3rx555BGFh4c7tG/ZskWpqakO7TVq1FCFChW0YcOGbN+v6VPAw4YN01NPPaW1a9eqSZMmkqT169dr5cqVWSaGAAAAd5LY2FgNGzbMoS0mJkZDhw7Nsv/cuXO1detWbdq0KdO5U6dOyd3dXSVKlHBoDwwM1KlTp7Idk+kJYGRkpDZu3KixY8dq0aJFkqTQ0FD98ssvql+/vrnBAQAAS3Bx4hrA6OhoRUVFObR5eHhk2ffo0aN65ZVXtGLFCnl6ejotJtMTQElq2LChPv/8c7PDAAAAyHMeHh43Tfj+asuWLTp9+rQaNGhgb7vxFbkTJ07UsmXLdO3aNZ0/f96hCpiQkKCgoKBsx1QgEkAAAAAzFZSHgFu2bKmdO3c6tPXs2VM1atTQm2++qfLly8vNzU0rV65UZGSkJGnfvn06cuSIwsLCsn0d0xJAFxeX2z5ybbPZlJaWlk8RAQAAqyoo28AUL15ctWrVcmgrVqyY/P397e3PPvusoqKi5OfnJx8fH7300ksKCwvT/fffn+3rmJYAfv311zc9t2HDBo0fP14ZGRn5GBEAAEDBN3bsWLm4uCgyMlIpKSmKiIjQ5MmTczSGzbjxBbwFwL59+zRw4EAtXrxYXbt21fDhwxUcHJzjcZ63+TghOgAFwaiwCmaHAMBJ/H7aZdq1j9Wr4bSxy23b67Sxc8v0fQAl6cSJE+rdu7dq166ttLQ0bdu2TbNmzcpV8gcAAIBbMzUBTEpK0ptvvqmQkBDt3r1bK1eu1OLFizPNfQMAADiTMzeCLohMWwP4/vvv67333lNQUJD+9a9/qX379maFAgAAYCmmrQF0cXGRl5eXwsPD5erqetN+CxcuzPHYrAEECi/WAAKFl5lrAE80DHXa2GW27HHa2LllWgWwW7duBeaRawAAACsxLQGcOXOmWZcGAABwYLWaFN8EAgAALM+Z3wVcEBWIbWAAAACQf6gAAgAAy7NYAZAKIAAAgNVQAQQAAJZntZ1JqAACAABYDBVAAABgeRYrAFIBBAAAsBoqgAAAwPKstgaQBBAAAFiexfI/poABAACshgogAACwPKtNAVMBBAAAsBgqgAAAwPJsFiuJWex2AQAAQAUQAABYHmsAAQAAUKhRAQQAAHCxVgWQBBAAAIApYAAAABRmVAABAIDl8RAIAAAACjUqgAAAABZ7CIQKIAAAgMVQAQQAAGANIAAAAAozKoAAAMDybBZbA0gCCAAAwBQwAAAACjMqgAAAwPKsNgVMBRAAAMBiqAACAACwBhAAAACFGRVAAAAA1gACAACgMKMCCAAALM9msTWAJIAAAABMAQMAAKAwowIIAABgsSlgKoAAAAAWQwUQAABYns1iJTGL3S4AAACoAAIAALAGEAAAAIUZFUAAAGB5NovtA0gCCAAAwBQwAAAACjMqgAAAABabAqYCCAAAYDE5TgBTU1NVpEgR7dq1yxnxAAAA5Dubzea0oyDKcQLo5uamChUqKD093RnxAAAAwMlyNQX89ttv66233lJiYmJexwMAAJD/XGzOOwqgXD0EMnHiRB04cEBlypRRcHCwihUr5nB+69ateRIcAAAA8l6uEsAOHTrkcRgAAAAmKqBr9ZwlVwlgTExMXscBAABgmoL6sIaz5HobmPPnz2v69OmKjo62rwXcunWrjh8/nmfBAQAAIO/lqgK4Y8cOhYeHy9fXV4cOHVLv3r3l5+enhQsX6siRI5o9e3ZexwkAAOA8BfRhDWfJVQUwKipKPXr0UFxcnDw9Pe3tbdu21dq1a/MsOAAAAOS9XFUAN23apGnTpmVqL1u2rE6dOvW3gwIAAMhPrAHMBg8PD124cCFT+/79+1WqVKm/HRQAAACcJ1cJ4GOPPabhw4crNTVV0vWs+ciRI3rzzTcVGRmZpwECAAA4ncU2gs5VAjh69GglJycrICBAV65cUfPmzRUSEqLixYvrnXfeyesYAQAAkIdytQbQ19dXK1as0Pr167V9+3YlJyerQYMGCg8Pz+v4AAAAnM9iawBzlQDe0KRJEzVp0iSvYgEAAEA+yNUU8Msvv6zx48dnap84caL69+//d2MCAADIVzYXm9OOgihXCeCCBQuyrPw1btxY8+fP/9tBAQAA5CubzXlHAZSrBPDcuXPy9fXN1O7j46OzZ8/+7aAAAADgPLlKAENCQrR06dJM7UuWLFHlypX/dlAAAAD5qoBsAzNlyhTVqVNHPj4+8vHxUVhYmJYsWWI/f/XqVfXt21f+/v7y9vZWZGSkEhIScny7uXoIJCoqSv369dOZM2fUokULSdLKlSs1evRoffTRR7kZEgAAwPLKlSund999V1WrVpVhGJo1a5bat2+vX3/9VXfffbdeffVVff/99/rqq6/k6+urfv36qWPHjlq/fn2OrmMzDMPITYBTpkzRO++8oxMnTkiSKlasqKFDh6pbt265GS5PPW/zMTsEAE4yKqyC2SEAcBK/n3aZdu20Fx9x2thFJn//t97v5+enDz74QE888YRKlSqlL7/8Uk888YQkae/evQoNDdWGDRt0//33Zz+m3Abzwgsv6IUXXtCZM2fk5eUlb2/v3A4FAABQaKWkpCglJcWhzcPDQx4eHrd8X3p6ur766itdunRJYWFh2rJli1JTUx32Xa5Ro4YqVKiQfwngDQXxu3+nXjpqdggAAOBO4sTtWmJjYzVs2DCHtpiYGA0dOjTL/jt37lRYWJiuXr0qb29vff3116pZs6a2bdsmd3d3lShRwqF/YGCgTp06laOYcpUAJiQkaMCAAVq5cqVOnz6tv84ip6en52ZYAACAQic6OlpRUVEObbeq/lWvXl3btm1TUlKS5s+fr+7du2vNmjV5GlOuEsAePXroyJEjGjx4sEqXLi1bAd3jBgAAIFucmMtkZ7r3z9zd3RUSEiJJatiwoTZt2qRx48bpqaee0rVr13T+/HmHKmBCQoKCgoJyFFOuEsAff/xR69atU7169XLzdgAAgIKlABezMjIylJKSooYNG8rNzU0rV65UZGSkJGnfvn06cuSIwsLCcjRmrhLA8uXLZ5r2BQAAwN8THR2thx9+WBUqVNDFixf15ZdfavXq1Vq2bJl8fX317LPPKioqSn5+fvLx8dFLL72ksLCwHD0AIuUyAfzoo480cOBATZs2TRUrVszNEAAAAAVHAakAnj59Wt26ddPJkyfl6+urOnXqaNmyZWrVqpUkaezYsXJxcVFkZKRSUlIUERGhyZMn5/g6udoHsGTJkrp8+bLS0tJUtGhRubm5OZxPTEzMcSB56nKSudcHAAA5VzTz18zml7RX2jtt7CLjvnHa2LmV6wogAABAoeGSq2/HvWPlKgHs3r17XscBAACAfPK3N4K+evWqrl275tDm48NXsQEAgDtIAVkDmF9yVe+8dOmS+vXrp4CAABUrVkwlS5Z0OAAAAFBw5SoBfOONN7Rq1SpNmTJFHh4emj59uoYNG6YyZcpo9uzZeR0jAACAc9lszjsKoFxNAS9evFizZ8/Wgw8+qJ49e6pp06YKCQlRcHCwvvjiC3Xt2jWv4wQAAHCeApqoOUuuKoCJiYmqXLmypOvr/W5s+/LAAw9o7dq1eRcdAAAA8lyuEsDKlSsrPj5eklSjRg3NmzdP0vXK4J+/mw4AAOCO4OLivKMAylVUPXv21Pbt2yVJAwcO1KRJk+Tp6an+/fvr9ddfz9MAAQAAkLdy9U0gf3X48GFt2bJFVatWVe3atfMirr+HbwIBAODOY+Y3gbz5lNPGLvLev502dm7lqAK4atUq1axZUxcuXHBoDw4OVsuWLdW5c2etW7cuTwMEAABA3spRAvjRRx+pd+/eWW707Ovrqz59+mjMmDF5FhwAAEC+sNg2MDlKALdv3642bdrc9Hzr1q21ZcuWvx0UAAAAnCdH+wAmJCTIzc3t5oMVKaIzZ8787aAAAADyVQGt1DlLjiqAZcuW1a5du256fseOHSpduvTfDgoAACBfsQ3MzbVt21aDBw/W1atXM527cuWKYmJi1K5duzwLDgAAAHkvR9vAJCQkqEGDBnJ1dVW/fv1UvXp1SdLevXs1adIkpaena+vWrQoMDHRawNnCNjAAANx5zNwGZtA/nDZ2kZGfO23s3MrRGsDAwED99NNPeuGFFxQdHa0buaPNZlNERIQmTZpkfvIHAACAW8pRAihd3/PvP//5j/744w8dOHBAhmGoatWqKlmypDPiAwAAcD6LPQSS4wTwhpIlS+ree+/Ny1gAAACQD3KdAAIAABQaFqsAFsxnkwEAAOA0VAABAIDl2Qrofn3OQgIIAADAFDAAAAAKMyqAAAAAVAABAABQmFEBBAAAoAIIAACAwowKIAAAgMW2gbHW3QIAAIAKIAAAgNXWAJIAAgAAWCwBZAoYAADAYqgAAgAAUAEEAABAYUYFEAAAgG1gAAAAUJhRAQQAAGANIAAAAAozKoAAAAAWqwCSAAIAAPAQCAAAAAozKoAAAAAWmwKmAggAAGAxVAABAACoAAIAAKAwowIIAABABRAAAACFGRVAAAAAi+0DSAIIAADAFDAAAAAKMyqAAAAAVAABAABQmFEBBAAAsFmrJmatuwUAAAAVQAAAALmwBhAAAACFGBVAAAAAi60BJAEEAABgGxgAAAAUZlQAAQAALPZdwNa6WwAAAFABBAAAYA0gAAAACjUqgAAAABbbBsZadwsAAAAqgAAAAKwBBAAAQKFGBRAAAMBi+wCSAAIAADAFDAAAgMKMCiAAAADbwAAAAMAMsbGxuvfee1W8eHEFBASoQ4cO2rdvn0Ofq1evqm/fvvL395e3t7ciIyOVkJCQo+uQAAIAALjYnHfkwJo1a9S3b1/9/PPPWrFihVJTU9W6dWtdunTJ3ufVV1/V4sWL9dVXX2nNmjU6ceKEOnbsmKPr2AzDMHL0jjvB5SSzIwAAADlV1Ne0S6d/Eeu0sV27Ruf6vWfOnFFAQIDWrFmjZs2aKSkpSaVKldKXX36pJ554QpK0d+9ehYaGasOGDbr//vuzNS5rAAEAAJy4BjAlJUUpKSkObR4eHvLw8Ljte5OSrhe1/Pz8JElbtmxRamqqwsPD7X1q1KihChUq5CgBZAoYAADAiWJjY+Xr6+twxMbevuKYkZGh/v37q0mTJqpVq5Yk6dSpU3J3d1eJEiUc+gYGBurUqVPZjokKIAAAgBP3AYyOjlZUVJRDW3aqf3379tWuXbv0448/5nlMJIAAAABOnALO7nTvn/Xr10/fffed1q5dq3Llytnbg4KCdO3aNZ0/f96hCpiQkKCgoKBsj88UMAAAQAFhGIb69eunr7/+WqtWrVKlSpUczjds2FBubm5auXKlvW3fvn06cuSIwsLCsn0dKoAAAAA53K7FWfr27asvv/xS33zzjYoXL25f1+fr6ysvLy/5+vrq2WefVVRUlPz8/OTj46OXXnpJYWFh2X4ARDIpAaxfv75s2Zxr37p1q5OjAQAAKBimTJkiSXrwwQcd2mfMmKEePXpIksaOHSsXFxdFRkYqJSVFERERmjx5co6uY0oC2KFDB/ufr169qsmTJ6tmzZr20uXPP/+s3bt368UXXzQjPAAAYDVOfAgkJ7KzPbOnp6cmTZqkSZMm5fo6piSAMTEx9j/36tVLL7/8skaMGJGpz9GjR/M7NAAAgELP9G8C8fX11ebNm1W1alWH9ri4ON1zzz32DRBzhG8CAQDgzmPmN4HM/8hpY7s+0d9pY+eW6U8Be3l5af369Zna169fL09PTxMiAgAAKNxMfwq4f//+euGFF7R161bdd999kqSNGzfqs88+0+DBg02ODgAAWEIBeQo4v5ieAA4cOFCVK1fWuHHj9Pnnn0uSQkNDNWPGDHXq1Mnk6AAAgCU4cSPogsj0NYBOwRpAAADuPGauAfx6gtPGdn38JaeNnVsFIt09f/68pk+frrfeekuJiYmSru//d/z4cZMjAwAAlmCzOe8ogEyfAt6xY4fCw8Pl6+urQ4cOqVevXvLz89PChQt15MgRzZ492+wQAQAAChXTK4BRUVHq0aOH4uLiHJ76bdu2rdauXWtiZAAAwDJsLs47CiDTo9q0aZP69OmTqb1s2bL2778DAABA3jF9CtjDw0MXLlzI1L5//36VKlXKhIgAAIDlWGwbGNMrgI899piGDx+u1NRUSZLNZtORI0f05ptvKjIy0uToAAAACh/TE8DRo0crOTlZAQEBunLlipo3b66QkBAVL15c77zzjtnhAQAAK7DYGkDTp4B9fX21YsUKrV+/Xtu3b1dycrIaNGig8PBws0MDAABWUUC3a3EW0xPA2bNn66mnnlKTJk3UpEkTe/u1a9c0d+5cdevWzcToAAAACh/TvwnE1dVVJ0+eVEBAgEP7uXPnFBAQoPT09JwPyjeBAABw5zHzm0CWTHfa2K4P93La2Lll+sS0YRiyZVF2PXbsmHx9zftBAAAAKKxMmwKuX7++bDabbDabWrZsqSJF/hdKenq64uPj1aZNG7PCAwAAVsIawPzRoUMHSdK2bdsUEREhb29v+zl3d3dVrFiRbWAAAACcwLQEMCYmRpJUsWJFde7cWR4eHmaFggJi2qcztXzVD/r90GF5enioft3aGvDKS6pcMfim71n47XeKjhnu0Obu7q6dG3+0vx44ZJi+Xvy9Q58HGt+vTyeNz9sbAHBTufn9/mev5/XLlq2Z2ps/0EQfTxgrSVq+8gfNnb9Qu/fs0fmkC1o093OFVq/mtPtAIVZAt2txFtOfAq5Zs6a2bdumRo0aObRv3LhRrq6uuueee0yKDPntl61b1fWpJ1X77lClp6VrzMQpevaFl/T9wn+rqJfXTd/n7V1MS7/+yv46qzWlTRuHKXbYYPtrd3f3vA0ewC3l5vd7wuj37F8SIEnnk5LU/ql/qE2rlva2y1euqEG9unq4VUsNGjHK6fcBFBamJ4B9+/bVG2+8kSkBPH78uN577z1t3LjRpMiQ3/5akXt32BCFtYzQ7t/26N6GDW76PptsKnXXXbcc293d7bZ9ADhPbn6/S/zlQcDvl62Qp6enQwLYoV1bSdKxEyfyOGJYDmsA89dvv/2mBg0y//LXr19fv/32mwkRoaC4mJwsSbd9GvzylSt66OHHlGFkqGaNGop66QVVrVLFoc8vm7cqrEWEfHyK6/5771H/vs+rZIkSzgodwG1k9/f7zxYs+laPRLS65YwAkGsuTAHnKw8PDyUkJKhy5coO7SdPnnR4MvhmUlJSlJKS4jhmegprCu9wGRkZGvXhGDWoV1fVQqrctF+l4AoaFTNI1atV1cWLyfpszufq3KOXvp8/V0GBgZKuT/+2avGQypUto6PHjmnMhCnq3a+//j3rU7m6uubXLQH4f9n9/f6zHbt2a/+Bg3onZpCTowOswfR0t3Xr1oqOjlZS0v82bz5//rzeeusttWrV6rbvj42Nla+vr8MR++EYZ4aMfDAs9n3FHfhdY98dect+9evWUYdHH1Fo9Wq6754GmvDh+/IrWVJz539t7/NIm9Zq+WAzVa8aovCHHtS08WO0c/dv+mXzFiffBYCsZPf3+8/mL/pW1aqGqE6tu50YGSzNZnPeUQCZXgH88MMP1axZMwUHB6t+/fqSrm8NExgYqDlz5tz2/dHR0YqKinJo80i/6pRYkT+Gv/uBVq/7UZ9/Os1excsuN7ciCq1eTUeOHrtpn/LlyqpkiRI6fPSYwhrd93fDBZADufn9vnzlir5ftlwvv9DHydEB1mF6Ali2bFnt2LFDX3zxhbZv3y4vLy/17NlTXbp0kZub223f7+HhkXm697Kp326HXDIMQyPe+1ArVq3WnE+mqHzZsjkeIz09XfsPHFTzJo1v2udUQoLOJyXxUAiQj/7O7/fSFSt17VqqHmvLlwPAidgGJv8VK1ZMzz33nNlhwGTDYt/Xd0uWafLYD1WsWFGdOXtWklTc21uenp6SpDcGxSgwIECvvdxXkjRx2nTVq1NLweXL68LFi/p01uc6cfKUnny8vSTp0uXLmjhtuiJaPqS77vLX0aPH9MG4iQouX05NG99vzo0CFpSb3+8b5i/6RuEPNs/ywa3zSUk6eSpBp0+fkSTFHzosSbrL349/5AG3UCASwDlz5mjatGn6/ffftWHDBgUHB2vs2LGqXLmy2rdvb3Z4yCf/+mqBJOmfvZ93aI8dNkQdH2snSTp5KkEuf3pS68LFCxo8fJTOnDsnX5/iujs0VHNnTldIlesPFbm6uGh/XJwWLf5eFy9eVECpUmoS1kivvNiHvQCBfJSb329J+v3QYW35dbs+mzIhy3FXrVnnsBn8qwPfliT169NLLz1PYQE5UEDX6jmLzTAMU+dLp0yZoiFDhqh///4aOXKkdu/ercqVK2vmzJmaNWuWfvjhh5wPejnp9n0AAEDBUjT72wLltfQfvnTa2K4PPe20sXPL9AnvCRMm6JNPPtHbb7/tsO3LPffco507d5oYGQAAsAybi/OOAsj0KeD4+Hj7079/5uHhoUuXLpkQEQAAsBwXa00Bm56WVqpUSdu2bcvUvnTpUoWGhuZ/QAAAAIWc6RXAqKgo9e3bV1evXpVhGPrll1/0r3/9S7GxsZo+fbrZ4QEAACsooFO1zmJ6AtirVy95eXlp0KBBunz5sp5++mmVKVNG48aNU+fOnc0ODwAAoNAx/SngP7t8+bKSk5MVEBDwNwfiKWAAAO44Zj4F/ON8p43t+sATThs7t0yvAP5Z0aJFVbRoUbPDAAAAKNRMSQDr168vWzY3XNy6dauTowEAAJbHGkDn69ChgxmXBQAAgArYGsA8wxpAAADuPCauAcz46Wunje3S+HGnjZ1bBaLeef78eU2fPl3R0dFKTEyUdH3q9/jx4yZHBgAALIFvAslfO3bsUHh4uHx9fXXo0CH17t1bfn5+WrhwoY4cOaLZs2ebHSIAAEChYnpaGhUVpR49eiguLk6enp729rZt22rt2rUmRgYAACzDYhVA06PatGmT+vTpk6m9bNmyOnXqlAkRAQAAFG6mTwF7eHjowoULmdr379+vUqVKmRARAACwHJfsbU9XWJheAXzsscc0fPhwpaamSpJsNpuOHDmiN998U5GRkSZHBwAAUPiYngCOHj3a/vVvV65cUfPmzVWlShV5e3vrnXfeMTs8AABgBRZbA2j6FLCvr69WrFihH3/8UTt27FBycrIaNmyoli1bmh0aAABAoWRaWrphwwZ999139tcPPPCAihUrpsmTJ6tLly567rnnlJKSYlZ4AADASmw25x0FkGkJ4PDhw7V792776507d6p3795q1aqVBg4cqMWLFys2Ntas8AAAgJVYbArYtKi2bdvmMM07d+5c3Xffffrkk08UFRWl8ePHa968eWaFBwAAUGiZtgbwjz/+UGBgoP31mjVr9PDDD9tf33vvvTp69KgZoQEAAKspoFO1zmJaBTAwMFDx8fGSpGvXrmnr1q26//777ecvXrwoNzc3s8IDAAAotEyrALZt21YDBw7Ue++9p0WLFqlo0aJq2rSp/fyOHTtUpUoVs8IDAABWUkDX6jmLaQngiBEj1LFjRzVv3lze3t6aNWuW3N3d7ec/++wztW7d2qzwAAAACi2bYRiGmQEkJSXJ29tbrq6uDu2JiYny9vZ2SAqz7XJSHkUHAADyTVFf0y6dsX2l08Z2qVvw9jYuEBtBZ8XPzy+fIwEAALAG0xNAAAAA01lsDaC17hYAAABUAAEAAKy2DyAJIAAAAFPAAAAAKMyoAAIAAFhsCpgKIAAAgMVQAQQAAGANIAAAAAozKoAAAAAu1qqJWetuAQAAQAUQAADAZrGngEkAAQAAeAgEAAAAhRkVQAAAAItNAVMBBAAAsBgSQAAAAJuL844cWrt2rR599FGVKVNGNptNixYtcjhvGIaGDBmi0qVLy8vLS+Hh4YqLi8vRNUgAAQAACpBLly6pbt26mjRpUpbn33//fY0fP15Tp07Vxo0bVaxYMUVEROjq1avZvobNMAwjrwIuMC4nmR0BAADIqaK+pl3aOLjVaWPbqjTI/XttNn399dfq0KGDpOvVvzJlyui1117TgAEDJElJSUkKDAzUzJkz1blz52yNSwUQAADAiVJSUnThwgWHIyUlJVdjxcfH69SpUwoPD7e3+fr6qlGjRtqwYUO2xyEBBAAAcHFx2hEbGytfX1+HIzY2Nldhnjp1SpIUGBjo0B4YGGg/lx1sAwMAAODEbWCio6MVFRXl0Obh4eG062UHCSAAAIATeXh45FnCFxQUJElKSEhQ6dKl7e0JCQmqV69etsdhChgAAKAAbQNzK5UqVVJQUJBWrlxpb7tw4YI2btyosLCwbI9DBRAAAKAASU5O1oEDB+yv4+PjtW3bNvn5+alChQrq37+/Ro4cqapVq6pSpUoaPHiwypQpY39SODtIAAEAAArQV8Ft3rxZDz30kP31jfWD3bt318yZM/XGG2/o0qVLeu6553T+/Hk98MADWrp0qTw9PbN9DfYBBAAABYOZ+wAe2eW0sW0Vajlt7NyiAggAAKCCUwHMDzwEAgAAYDFUAAEAAArQGsD8QAIIAABgsQSQKWAAAACLoQIIAADAQyAAAAAozKgAAgAAsAYQAAAAhRkVQAAAAGsVAKkAAgAAWA0VQAAAAIuVAEkAAQAAeAgEAAAAhRkVQAAAACqAAAAAKMyoAAIAAFjsIRAqgAAAABZDBRAAAIA1gAAAACjMqAACAABYbA0gCSAAAABTwAAAACjMqAACAABQAQQAAEBhRgUQAADAYg+BUAEEAACwGCqAAADA8mysAQQAAEBhRgUQAADAYhVAEkAAAAAeAgEAAEBhRgUQAADAYlPAVAABAAAshgogAAAAFUAAAAAUZlQAAQAAeAoYAAAAhRkVQAAAAIutASQBBAAAsFb+xxQwAACA1VABBAAAsFgJkAogAACAxVABBAAAsNhDIFQAAQAALIYKIAAAABVAAAAAFGZUAAEAAHgKGAAAAIUZFUAAAACLrQEkAQQAALBYAsgUMAAAgMVQAQQAAOAhEAAAABRmVAABAABYAwgAAIDCzGYYhmF2EEBupaSkKDY2VtHR0fLw8DA7HAB5iN9vwHlIAHFHu3Dhgnx9fZWUlCQfHx+zwwGQh/j9BpyHKWAAAACLIQEEAACwGBJAAAAAiyEBxB3Nw8NDMTExLBAHCiF+vwHn4SEQAAAAi6ECCAAAYDEkgAAAABZDAggAAGAxJIAAAAAWQwKIAq9Hjx6y2Wx69913HdoXLVokm8W+vBsoDAzDUHh4uCIiIjKdmzx5skqUKKFjx46ZEBlgHSSAuCN4enrqvffe0x9//GF2KAD+JpvNphkzZmjjxo2aNm2avT0+Pl5vvPGGJkyYoHLlypkYIVD4kQDijhAeHq6goCDFxsbetM+CBQt09913y8PDQxUrVtTo0aPzMUIAOVG+fHmNGzdOAwYMUHx8vAzD0LPPPqvWrVurfv36evjhh+Xt7a3AwED985//1NmzZ+3vnT9/vmrXri0vLy/5+/srPDxcly5dMvFugDsPCSDuCK6urho1apQmTJiQ5dTQli1b1KlTJ3Xu3Fk7d+7U0KFDNXjwYM2cOTP/gwWQLd27d1fLli31zDPPaOLEidq1a5emTZumFi1aqH79+tq8ebOWLl2qhIQEderUSZJ08uRJdenSRc8884z27Nmj1atXq2PHjmJLWyBn2AgaBV6PHj10/vx5LVq0SGFhYapZs6Y+/fRTLVq0SI8//rgMw1DXrl115swZLV++3P6+N954Q99//712795tYvQAbuX06dO6++67lZiYqAULFmjXrl1at26dli1bZu9z7NgxlS9fXvv27VNycrIaNmyoQ4cOKTg42MTIgTsbFUDcUd577z3NmjVLe/bscWjfs2ePmjRp4tDWpEkTxcXFKT09PT9DBJADAQEB6tOnj0JDQ9WhQwdt375dP/zwg7y9ve1HjRo1JEkHDx5U3bp11bJlS9WuXVtPPvmkPvnkE9YGA7lAAog7SrNmzRQREaHo6GizQwGQR4oUKaIiRYpIkpKTk/Xoo49q27ZtDkdcXJyaNWsmV1dXrVixQkuWLFHNmjU1YcIEVa9eXfHx8SbfBXBnKWJ2AEBOvfvuu6pXr56qV69ubwsNDdX69esd+q1fv17VqlWTq6trfocIIJcaNGigBQsWqGLFivak8K9sNpuaNGmiJk2aaMiQIQoODtbXX3+tqKiofI4WuHNRAcQdp3bt2uratavGjx9vb3vttde0cuVKjRgxQvv379esWbM0ceJEDRgwwMRIAeRU3759lZiYqC5dumjTpk06ePCgli1bpp49eyo9PV0bN27UqFGjtHnzZh05ckQLFy7UmTNnFBoaanbowB2FBBB3pOHDhysjI8P+ukGDBpo3b57mzp2rWrVqaciQIRo+fLh69OhhXpAAcqxMmTJav3690tPT1bp1a9WuXVv9+/dXiRIl5OLiIh8fH61du1Zt27ZVtWrVNGjQII0ePVoPP/yw2aEDdxSeAgYAALAYKoAAAAAWQwIIAABgMSSAAAAAFkMCCAAAYDEkgAAAABZDAggAAGAxJIAAAAAWQwIIAABgMSSAACxp5syZKlGihNlhAIApSAAB3FSPHj1ks9lks9nk5uamwMBAtWrVSp999pnDV/HdiZ566int37/f7DAAwBQkgABuqU2bNjp58qQOHTqkJUuW6KGHHtIrr7yidu3aKS0tzWnXvXbtmtPGliQvLy8FBAQ49RoAUFCRAAK4JQ8PDwUFBals2bJq0KCB3nrrLX3zzTdasmSJZs6cKUk6f/68evXqpVKlSsnHx0ctWrTQ9u3b7WMMHTpU9erV07Rp01S+fHkVLVpUnTp1UlJSkr1Pjx491KFDB73zzjsqU6aMqlevLkk6evSoOnXqpBIlSsjPz0/t27fXoUOH7O9bvXq17rvvPhUrVkwlSpRQkyZNdPjwYUnS9u3b9dBDD6l48eLy8fFRw4YNtXnzZklZTwFPmTJFVapUkbu7u6pXr645c+Y4nLfZbJo+fboef/xxFS1aVFWrVtW3336bVx81AOQbEkAAOdaiRQvVrVtXCxculCQ9+eSTOn36tJYsWaItW7aoQYMGatmypRITE+3vOXDggObNm6fFixdr6dKl+vXXX/Xiiy86jLty5Urt27dPK1as0HfffafU1FRFRESoePHiWrdundavXy9vb2+1adNG165dU1pamjp06KDmzZtrx44d2rBhg5577jnZbDZJUteuXVWuXDlt2rRJW7Zs0cCBA+Xm5pblPX399dd65ZVX9Nprr2nXrl3q06ePevbsqR9++MGh37Bhw9SpUyft2LFDbdu2VdeuXR3uEwDuCAYA3ET37t2N9u3bZ3nuqaeeMkJDQ41169YZPj4+xtWrVx3OV6lSxZg2bZphGIYRExNjuLq6GseOHbOfX7JkieHi4mKcPHnSfq3AwEAjJSXF3mfOnDlG9erVjYyMDHtbSkqK4eXlZSxbtsw4d+6cIclYvXp1ljEWL17cmDlzZpbnZsyYYfj6+tpfN27c2Ojdu7dDnyeffNJo27at/bUkY9CgQfbXycnJhiRjyZIlWV4DAAoqKoAAcsUwDNlsNm3fvl3Jycny9/eXt7e3/YiPj9fBgwft/StUqKCyZcvaX4eFhSkjI0P79u2zt9WuXVvu7u7219u3b9eBAwdUvHhx+7h+fn66evWqDh48KD8/P/Xo0UMRERF69NFHNW7cOJ08edL+/qioKPXq1Uvh4eF69913HeL5qz179qhJkyYObU2aNNGePXsc2urUqWP/c7FixeTj46PTp0/n4JMDAPMVMTsAAHemPXv2qFKlSkpOTlbp0qW1evXqTH1yus1KsWLFHF4nJyerYcOG+uKLLzL1LVWqlCRpxowZevnll7V06VL9+9//1qBBg7RixQrdf//9Gjp0qJ5++ml9//33WrJkiWJiYjR37lw9/vjjOYrrz/46hWyz2e74J6IBWA8VQAA5tmrVKu3cuVORkZFq0KCBTp06pSJFiigkJMThuOuuu+zvOXLkiE6cOGF//fPPP8vFxcX+sEdWGjRooLi4OAUEBGQa29fX196vfv36io6O1k8//aRatWrpyy+/tJ+rVq2aXn31VS1fvlwdO3bUjBkzsrxWaGio1q9f79C2fv161axZM8efDwAUdCSAAG4pJSVFp06d0vHjx7V161aNGjVK7du3V7t27dStWzeFh4crLCxMHTp00PLly3Xo0CH99NNPevvtt+1P3EqSp6enunfvru3bt2vdunV6+eWX1alTJwUFBd302l27dtVdd92l9u3ba926dYqPj9fq1av18ssv69ixY4qPj1d0dLQ2bNigw4cPa/ny5YqLi1NoaKiuXLmifv36afXq1Tp8+LDWr1+vTZs2KTQ0NMtrvf7665o5c6amTJmiuLg4jRkzRgsXLtSAAQPy/DMFALMxBQzglpYuXarSpUurSJEiKlmypOrWravx48ere/fucnG5/m/I//znP3r77bfVs2dPnTlzRkFBQWrWrJkCAwPt44SEhKhjx45q27atEhMT1a5dO02ePPmW1y5atKjWrl2rN998Ux07dtTFixdVtmxZtWzZUj4+Prpy5Yr27t2rWbNm6dy5cypdurT69u2rPn36KC0tTefOnVO3bt2UkJCgu+66Sx07dtSwYcOyvFaHDh00btw4ffjhh3rllVdUqVIlzZgxQw8++GCefZYAUFDYDMMwzA4CQOE2dOhQLVq0SNu2bTM7FACAmAIGAACwHBJAAAAAi2EKGAAAwGKoAAIAAFgMCSAAAIDFkAACAABYDAkgAACAxZAAAgAAWAwJIAAAgMWQAAIAAFgMCSAAAIDF/B8a8iKhP9QJ1QAAAABJRU5ErkJggg=="/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<br/><h2 id="Bubble-plot-per-country">Bubble plot per country</h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><div class="highlight"><pre><span></span><span class="n">wave</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="p">[</span><span class="s1">'ph006d10'</span><span class="p">,</span> <span class="s1">'country'</span><span class="p">,</span> <span class="s1">'dn003_'</span><span class="p">,</span> <span class="s1">'br003_'</span><span class="p">,</span> <span class="s1">'hc602_'</span><span class="p">])</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">id_to_name</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">deal_nan</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">wave</span><span class="p">)</span>
+<span class="n">col_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'Cancer'</span><span class="p">:</span> <span class="s1">'int'</span><span class="p">,</span>
+    <span class="s1">'YearOfBirth'</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span>
+    <span class="s1">'Country'</span><span class="p">:</span> <span class="s1">'category'</span><span class="p">,</span>
+    <span class="s1">'Age'</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span>
+    <span class="s1">'YearCigarette'</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span>
+    <span class="s1">'MedVisit'</span><span class="p">:</span> <span class="s1">'float'</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">col_types</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">col_types</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<div class="dataframe-container"><table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>Cancer</th>
+<th>Country</th>
+<th>YearOfBirth</th>
+<th>YearCigarette</th>
+<th>MedVisit</th>
+<th>Age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>1</td>
+<td>Austria</td>
+<td>1939.0</td>
+<td>60.0</td>
+<td>50.0</td>
+<td>80.0</td>
+</tr>
+<tr>
+<th>1</th>
+<td>0</td>
+<td>Austria</td>
+<td>1952.0</td>
+<td>20.0</td>
+<td>7.0</td>
+<td>67.0</td>
+</tr>
+<tr>
+<th>2</th>
+<td>0</td>
+<td>Austria</td>
+<td>1951.0</td>
+<td>53.0</td>
+<td>3.0</td>
+<td>68.0</td>
+</tr>
+<tr>
+<th>3</th>
+<td>0</td>
+<td>Austria</td>
+<td>1930.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>89.0</td>
+</tr>
+<tr>
+<th>4</th>
+<td>0</td>
+<td>Austria</td>
+<td>1924.0</td>
+<td>NaN</td>
+<td>4.0</td>
+<td>95.0</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><div class="highlight"><pre><span></span><span class="n">df_mean</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'Country'</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s1">'MedVisit'</span><span class="p">:</span> <span class="s1">'mean'</span><span class="p">,</span> <span class="s1">'YearCigarette'</span><span class="p">:</span> <span class="s1">'mean'</span><span class="p">,</span> <span class="s1">'Cancer'</span><span class="p">:</span> <span class="s1">'mean'</span><span class="p">})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">df_mean</span><span class="p">[</span><span class="s1">'Cancer'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mean</span><span class="p">[</span><span class="s1">'Cancer'</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><div class="highlight"><pre><span></span><span class="n">df_mean</span><span class="p">[</span><span class="s1">'hovertext'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_mean</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'Country'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;br&gt;Medical Visit: </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'MedVisit'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&lt;br&gt;Time Smoking: </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'YearCigarette'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&lt;br&gt;Cancer Rate: </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'Cancer'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="c1"># bubble plot</span>
+<span class="c1"># Create the scatter plot</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">df_mean</span><span class="p">[</span><span class="s1">'MedVisit'</span><span class="p">],</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">df_mean</span><span class="p">[</span><span class="s1">'YearCigarette'</span><span class="p">],</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">'markers'</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">size</span><span class="o">=</span><span class="n">df_mean</span><span class="p">[</span><span class="s1">'Cancer'</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span>  <span class="c1"># Adjusting the size based on the 'Cancer' column</span>
+    <span class="p">),</span>
+    <span class="n">text</span><span class="o">=</span><span class="n">df_mean</span><span class="p">[</span><span class="s1">'Country'</span><span class="p">],</span>  <span class="c1"># Country names for hover</span>
+    <span class="n">hovertext</span><span class="o">=</span><span class="n">df_mean</span><span class="p">[</span><span class="s1">'hovertext'</span><span class="p">],</span>  <span class="c1"># Use the new hovertext column</span>
+    <span class="n">hoverinfo</span><span class="o">=</span><span class="s1">'text'</span>
+<span class="p">))</span>
+
+<span class="c1"># Update layout with titles and labels</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'Average Count of Medical Visit vs Average Time Smoking in Europe'</span><span class="p">,</span>
+    <span class="n">xaxis_title</span><span class="o">=</span><span class="s1">'Average Count of Medical Visit'</span><span class="p">,</span>
+    <span class="n">yaxis_title</span><span class="o">=</span><span class="s1">'Average Time Smoking'</span><span class="p">,</span>
+    <span class="n">hovermode</span><span class="o">=</span><span class="s1">'closest'</span><span class="p">,</span>
+    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">'white'</span><span class="p">,</span>  <span class="c1"># Set background color to white</span>
+    <span class="n">xaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">showticklabels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">linecolor</span><span class="o">=</span><span class="s1">'black'</span><span class="p">,</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">ticks</span><span class="o">=</span><span class="s1">'outside'</span><span class="p">,</span>
+        <span class="n">tickfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">family</span><span class="o">=</span><span class="s1">'Arial'</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s1">'black'</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">),</span>
+    <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">title_standoff</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>  <span class="c1"># For rotating the y-axis label</span>
+        <span class="n">showline</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">showgrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">showticklabels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">linecolor</span><span class="o">=</span><span class="s1">'black'</span><span class="p">,</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">ticks</span><span class="o">=</span><span class="s1">'outside'</span><span class="p">,</span>
+        <span class="n">tickfont</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">family</span><span class="o">=</span><span class="s1">'Arial'</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s1">'black'</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">),</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+    <span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>  <span class="c1"># Adjust margins to prevent clipping</span>
+<span class="p">)</span>
+
+<span class="c1"># Show the plot</span>
+<span class="c1">#fig.show()</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">"../../img/plotly/bubble_medical_cigarette_cancer.html"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<div class="highlight"><pre><span></span><span class="s1">'../../img/plotly/bubble_medical_cigarette_cancer.html'</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<iframe height="650" src="../../img/plotly/bubble_medical_cigarette_cancer.html" width="1030"></iframe>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <br/>
 <br/><h2 id="Modelling-cancer-with-machine-learning">Modelling cancer with machine learning</h2>
 </div>
@@ -708,19 +1155,16 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-OutputArea-child">
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<div class="highlight"><pre><span></span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">m2</span><span class="o">/</span><span class="n">jfzxyg4s0xz3jyw5f94r7tcm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_19491</span><span class="o">/</span><span class="mf">694659875.</span><span class="n">py</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span> <span class="n">SettingWithCopyWarning</span><span class="p">:</span>
-
-
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">m2</span><span class="o">/</span><span class="n">jfzxyg4s0xz3jyw5f94r7tcm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_23310</span><span class="o">/</span><span class="mf">694659875.</span><span class="n">py</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span> <span class="n">SettingWithCopyWarning</span><span class="p">:</span> 
 <span class="n">A</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">trying</span> <span class="n">to</span> <span class="n">be</span> <span class="nb">set</span> <span class="n">on</span> <span class="n">a</span> <span class="n">copy</span> <span class="n">of</span> <span class="n">a</span> <span class="nb">slice</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">DataFrame</span>
 
 <span class="n">See</span> <span class="n">the</span> <span class="n">caveats</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">documentation</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pandas</span><span class="o">.</span><span class="n">pydata</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">pandas</span><span class="o">-</span><span class="n">docs</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">user_guide</span><span class="o">/</span><span class="n">indexing</span><span class="o">.</span><span class="n">html</span><span class="c1">#returning-a-view-versus-a-copy</span>
-
-<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">m2</span><span class="o">/</span><span class="n">jfzxyg4s0xz3jyw5f94r7tcm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_19491</span><span class="o">/</span><span class="mf">694659875.</span><span class="n">py</span><span class="p">:</span><span class="mi">64</span><span class="p">:</span> <span class="n">SettingWithCopyWarning</span><span class="p">:</span>
-
-
+  <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span>
+<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span><span class="n">m2</span><span class="o">/</span><span class="n">jfzxyg4s0xz3jyw5f94r7tcm0000gn</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">ipykernel_23310</span><span class="o">/</span><span class="mf">694659875.</span><span class="n">py</span><span class="p">:</span><span class="mi">64</span><span class="p">:</span> <span class="n">SettingWithCopyWarning</span><span class="p">:</span> 
 <span class="n">A</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">trying</span> <span class="n">to</span> <span class="n">be</span> <span class="nb">set</span> <span class="n">on</span> <span class="n">a</span> <span class="n">copy</span> <span class="n">of</span> <span class="n">a</span> <span class="nb">slice</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">DataFrame</span>
 
 <span class="n">See</span> <span class="n">the</span> <span class="n">caveats</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">documentation</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pandas</span><span class="o">.</span><span class="n">pydata</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">pandas</span><span class="o">-</span><span class="n">docs</span><span class="o">/</span><span class="n">stable</span><span class="o">/</span><span class="n">user_guide</span><span class="o">/</span><span class="n">indexing</span><span class="o">.</span><span class="n">html</span><span class="c1">#returning-a-view-versus-a-copy</span>
+  <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">values_to_replace</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'NaN'</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
 </div>
