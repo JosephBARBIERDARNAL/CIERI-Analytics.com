@@ -14,24 +14,6 @@
     --color-fg: white;
 }
 
-button {
-    max-width: 40px;
-    border: none; /* Ensures no borders */
-    background: none; /* Removes any background styles */
-    padding: 0; /* Removes padding inside the button */
-    outline: none; /* Removes the focus outline */
-    cursor: pointer; /* Changes cursor to pointer to indicate it's clickable */
-    margin-left: 30px;
-    margin-top: 30px;
-}
-
-/* Styles for img within the button */
-button img {
-    max-width: 100%; /* Ensures the image scales to the button's size */
-    display: block; /* Removes any default inline styling */
-}
-
-
 body {
     font-family: Trebuchet MS, sans-serif;
     font-size: 22px;
