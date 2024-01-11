@@ -140,8 +140,8 @@ a {
     font-weight: bold;
 }
 
-a:hover :not(.header-container) {
-    color: rgb(109, 3, 176); /* Changes color to orange on hover */
+a:hover :not(header) {
+    color: rgb(140, 12, 219); /* Changes color to orange on hover */
 }
 
 .header-container a:hover :not(h1) {

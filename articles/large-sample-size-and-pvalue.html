@@ -131,6 +131,8 @@
         </p>
         <h3>Step one</h3>
         <p>
+            We start by the sum of the squares of the residuals, which is the objective function of the linear regression,
+            and rewrite it as a function of the correlation between \(x\) and \(y\), the sample size and the variance of \(y\):
             $$\sum r_i^2 = \sum (\tilde{y}_i - \tilde{x}_i \beta)^2$$
             $$= \sum (\tilde{y}_i - \tilde{x}_i \frac{cov(x,y)}{Var(x)})^2$$
             $$= \sum (\tilde{y}_i^2 - 2\tilde{y}_i \tilde{x}_i \frac{cov(x,y)}{Var(x)} + \tilde{x}_i^2\frac{cov^2(x,y)}{Var^2(x)})$$
@@ -141,17 +143,20 @@
         </p>
         <h3>Step two</h3>
         <p>
+            We now rewrite the residual variance as a function of the variance of \(y\), the sample size and the correlation:
             $$Var(\varepsilon) = \sigma^2_{\varepsilon} = \frac{\sum r_i^2}{n-k}$$
             $$= \frac{nVar(y) (1 - cor^2(x,y))}{n-k}$$
         </p>
         <h3>Step three</h3>
         <p>
+            We now rewrite the variance of the coefficient using the previous result:
             $$Var(\hat\beta) = \frac{\sigma^2_{\varepsilon}}{nVar(x)}$$
             $$= \frac{nVar(y) (1 - cor^2(x,y))}{nVar(x)(n-k)}$$
             $$\sqrt{Var(\hat\beta)} = \frac{\sigma(y)}{\sigma(x)} \times \frac{\sqrt{1 - cor^2(x,y)}}{\sqrt{n-k}}$$
         </p>
         <h3>Step four</h3>
         <p>
+            Finally, we can rewrite \(t\) as a function of the correlation:
             $$t = \frac{\hat\beta }{\sigma(\hat\beta)} = \frac{\sigma(y)}{\sigma(x)} \times cor(x,y) \times \frac{\sigma(x)}{\sigma(y)} \times \frac{\sqrt{n-k}}{\sqrt{1 - cor^2(x,y)}}$$
             $$= cor(x,y) \times \frac{\sqrt{n-k}}{\sqrt{1 - cor^2(x,y)}}$$
 
@@ -163,9 +168,7 @@
             low level of correlation. When the correlation is high, it is not a problem that our \(t\) is significant. It is
             important to keep in mind that \(t\) is decreasing with \(k\), the number of explanatory variables, since \(n\) is most
             of the time much larger than \(k\), it does not really matter here. I don't know if there is a similarity or a
-            difference when working on high dimensional data. I hope this post has helped to understand why higher is not always
-            better for the sample size. The main idea to remember is that there is a better range for the sample size that has
-            an upper bound. 
+            difference when working on high dimensional data.
         </p>
 
         <br>
@@ -271,7 +274,11 @@ plt.show()
 
         <h2>Going further</h2><hr>
         <p>
-            In this post, we saw <i>[insert here a brief recap]</i>
+            In this post, we saw that the p-value is not a fixed value. It depends on the sample size. The larger the
+            sample size, the smaller the p-value, independently of the effect size. We also saw that the p-value is
+            not a measure of the effect size. It only measures if the effect is statistically significant. In other
+            words, it only measures if the difference between the null hypothesis and what we observe is likely to be
+            due to chance.
         </p>
         <p>
             If you want to go further, check:
