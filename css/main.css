@@ -234,11 +234,15 @@ code {
     padding: 0; /* You can adjust this if additional padding is needed */
 }
 
+
+
+
+
+/* Styling for python notebook .ipynb */
 .jp-Notebook .jp-CodeMirrorEditor .CodeMirror, .jp-Notebook .highlight pre {
     white-space: pre-wrap;
     word-break: break-word;
 }
-
 .jp-InputArea.jp-Cell-inputArea:not(:has(.jp-MarkdownOutput)) {
     background-color: #f8f8f8; /* Light grey background */
     border: 1px solid #ddd; /* Light border */
@@ -249,12 +253,10 @@ code {
     padding: 30px;
     font-size: 18px;
 }
-
 .jp-CodeMirrorEditor {
     font-family: 'Courier New', monospace; /* Monospaced font */
     color: #333; /* Darker text for readability */
 }
-
 .jp-OutputArea {
     background-color: #fff; /* White background */
     color: #000; /* Black text */
@@ -263,13 +265,10 @@ code {
     margin-bottom: 10px;
     font-size: 18px;
 }
-
 .dataframe-container {
     width: 100%; /* Adjust this value as needed */
     overflow-x: auto; /* Allows horizontal scrolling */
 }
-
-/* dataframe output */
 .dataframe {
     border-collapse: collapse;
     border-spacing: 0;
@@ -277,6 +276,38 @@ code {
     text-align: center;
     font-size: 14px;
 }
+
+
+
+
+
+/* Styling for .Rmd */
+code.sourceCode.r {
+    background-color: #f8f8f8; /* Light grey background */
+    border: 1px solid #ddd; /* Light border */
+    color: #0d0d0d; /* Darker text for readability */
+    padding: 5px;
+    margin-bottom: 10px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding: 30px;
+    font-size: 18px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+#data > pre > code {
+    background-color: #fff; /* White background */
+    color: #000; /* Black text */
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
+
 
 iframe {
     width: 100%;

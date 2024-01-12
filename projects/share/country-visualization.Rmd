@@ -1,0 +1,38 @@
+---
+title: "Country visualization"
+output: 
+    html_document:
+        template: ../../templates/template-rmd.html
+        css: ../../css/style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+# Country visualization
+
+The aim of this page is to visualize data from the [SHARE Survey](share.html), the largest European social science study. We'll use their data to visualize various information on countries.
+
+<br><br>
+
+## Packages
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(hrbrthemes)
+```
+
+<br><br>
+
+## Data
+
+```{r data}
+df = read.csv("../../data/br_dn_ph_wave8.csv")
+```
+
+<br><br>
+
+## Country visualization
+
