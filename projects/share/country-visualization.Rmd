@@ -7,12 +7,19 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(
+    warning=FALSE,
+    message=FALSE,
+    fig.width=12,
+    fig.height=8   
+)
 ```
 
 # Country visualization
 
 The aim of this page is to visualize data from the [SHARE Survey](share.html), the largest European social science study. We'll use their data to visualize various information on countries.
+
+
 
 <br><br>
 
@@ -22,7 +29,11 @@ The aim of this page is to visualize data from the [SHARE Survey](share.html), t
 library(dplyr)
 library(ggplot2)
 library(hrbrthemes)
+library(ggridges)
+library(viridis)
 ```
+
+
 
 <br><br>
 
@@ -32,7 +43,25 @@ library(hrbrthemes)
 df = read.csv("../../data/br_dn_ph_wave8.csv")
 ```
 
+
+
 <br><br>
 
-## Country visualization
+## Age distribution by country
 
+```{r}
+ggplot(df, aes(x = Age, y = Country, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "Age", option = "C") +
+  labs(title = 'Age distribution in European countries') +
+  theme_ipsum() +
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+```
+
+
+
+<br><br>
