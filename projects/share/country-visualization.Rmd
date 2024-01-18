@@ -27,9 +27,11 @@ The aim of this page is to visualize data from the [SHARE Survey](share.html), t
 
 ```{r}
 library(dplyr)
+library(foreign)
 library(ggplot2)
 library(hrbrthemes)
 library(ggridges)
+library(ggstatsplot)
 library(viridis)
 ```
 
@@ -41,6 +43,10 @@ library(viridis)
 
 ```{r data}
 df = read.csv("../../data/br_dn_ph_wave8.csv")
+ex_df = read.dta("../../../SHARE/data/sharew8_rel8-0-0_ALL_datasets_stata/sharew8_rel8-0-0_ex.dta")
+
+# merge df with merged_id
+
 ```
 
 
@@ -65,3 +71,18 @@ ggplot(df, aes(x = Age, y = Country, fill = ..x..)) +
 
 
 <br><br>
+
+##
+
+```{r}
+ggplot(df, aes(x = Age, y = Country, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "Age", option = "C") +
+  labs(title = 'Age distribution in European countries') +
+  theme_ipsum() +
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+```
