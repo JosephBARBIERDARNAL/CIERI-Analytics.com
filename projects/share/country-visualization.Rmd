@@ -70,7 +70,7 @@ ggplot(df, aes(x = Age, y = Country, fill = ..x..)) +
 ## Risk Aversion per country
 
 ```{r}
-df = read.csv("../../data/trustness_country_wave8.csv")
+df = read.csv("../../data/trustness_wave8.csv")
 
 avg_trust = df %>%
   group_by(Country) %>%
@@ -82,6 +82,60 @@ ggplot(df, aes(x = Trustness, y = Country, fill = ..x..)) +
   geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
   scale_fill_viridis(name = "Trustness", option = "C") +
   labs(title = 'Trustness distribution in European countries') +
+  theme_ipsum() +
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+```
+
+
+
+<br><br>
+
+## Number of children per country
+
+```{r}
+df = read.csv("../../data/children_wave8.csv")
+
+avg_child = df %>%
+  group_by(Country) %>%
+  summarize(AverageChild = mean(Children, na.rm = TRUE))
+df = merge(df, avg_child, by = "Country")
+df$Country = factor(df$Country, levels = avg_child$Country[order(avg_child$AverageChild, decreasing = TRUE)])
+
+ggplot(df, aes(x = Children, y = Country, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "Children", option = "C") +
+  labs(title = 'Number of children distribution in European countries') +
+  theme_ipsum() +
+    theme(
+      legend.position="none",
+      panel.spacing = unit(0.1, "lines"),
+      strip.text.x = element_text(size = 8)
+    )
+```
+
+
+
+<br><br>
+
+## Age when learned that people have cancer per country
+
+```{r}
+df = read.csv("../../data/cancerlearn_wave8.csv")
+
+avg_agecancer = df %>%
+  group_by(Country) %>%
+  summarize(AverageCancerAge = mean(CancerLearn, na.rm = TRUE))
+df = merge(df, avg_agecancer, by = "Country")
+df$Country = factor(df$Country, levels = avg_agecancer$Country[order(avg_agecancer$AverageCancerAge, decreasing = TRUE)])
+
+ggplot(df, aes(x = CancerLearn, y = Country, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis(name = "CancerLearn", option = "C") +
+  labs(title = 'Age when learned that people have cancer distribution in European countries') +
   theme_ipsum() +
     theme(
       legend.position="none",
