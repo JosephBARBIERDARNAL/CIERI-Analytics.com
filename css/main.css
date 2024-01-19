@@ -295,8 +295,8 @@ code.sourceCode.r {
     white-space: pre-wrap;
     word-break: break-word;
 }
-#data > pre > code {
-    background-color: #fff; /* White background */
+pre > code {
+    background-color: #f9f4f4; /* White background */
     color: #000; /* Black text */
     padding: 10px;
     margin-top: 10px;

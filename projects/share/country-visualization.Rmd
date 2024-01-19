@@ -3,15 +3,15 @@ title: "Country visualization"
 output: 
     html_document:
         template: ../../templates/template-rmd.html
-        css: ../../css/style.css
+        css: ../../css/main.css
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
     warning=FALSE,
     message=FALSE,
-    fig.width=12,
-    fig.height=8   
+    fig.width=10,
+    fig.height=12   
 )
 ```
 
@@ -37,25 +37,20 @@ library(viridis)
 
 
 
-<br><br>
-
-## Data
-
-```{r data}
-df = read.csv("../../data/br_dn_ph_wave8.csv")
-ex_df = read.dta("../../../SHARE/data/sharew8_rel8-0-0_ALL_datasets_stata/sharew8_rel8-0-0_ex.dta")
-
-# merge df with merged_id
-
-```
-
-
 
 <br><br>
 
 ## Age distribution by country
 
 ```{r}
+# open df and sort by age
+df = read.csv("../../data/br_dn_ph_wave8.csv")
+avg_ages = df %>%
+  group_by(Country) %>%
+  summarize(AverageAge = mean(Age, na.rm = TRUE))
+df = merge(df, avg_ages, by = "Country")
+df$Country = factor(df$Country, levels = avg_ages$Country[order(avg_ages$AverageAge, decreasing = TRUE)])
+
 ggplot(df, aes(x = Age, y = Country, fill = ..x..)) +
   geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
   scale_fill_viridis(name = "Age", option = "C") +
@@ -72,13 +67,21 @@ ggplot(df, aes(x = Age, y = Country, fill = ..x..)) +
 
 <br><br>
 
-##
+## Risk Aversion per country
 
 ```{r}
-ggplot(df, aes(x = Age, y = Country, fill = ..x..)) +
+df = read.csv("../../data/trustness_country_wave8.csv")
+
+avg_trust = df %>%
+  group_by(Country) %>%
+  summarize(AverageTrust = mean(Trustness, na.rm = TRUE))
+df = merge(df, avg_trust, by = "Country")
+df$Country = factor(df$Country, levels = avg_trust$Country[order(avg_trust$AverageTrust, decreasing = TRUE)])
+
+ggplot(df, aes(x = Trustness, y = Country, fill = ..x..)) +
   geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
-  scale_fill_viridis(name = "Age", option = "C") +
-  labs(title = 'Age distribution in European countries') +
+  scale_fill_viridis(name = "Trustness", option = "C") +
+  labs(title = 'Trustness distribution in European countries') +
   theme_ipsum() +
     theme(
       legend.position="none",
